@@ -6,7 +6,7 @@ Performs a unified treatment of Bump Hunting by Patient Rule Induction Method (P
 =====================================
 Branch #2  (unified) - version 1.0.0:
 =====================================
-This second branch will host the future undirected peeling search version by Patient Rule Induction Method (PRIM) that will allow the unified treatment of bump hunting for every type of common response: Survival, Regression and Classification (SRC).
+This second branch (unified) will host the future complete version of the code (version 1.0.0), including undirected peeling search by Patient Rule Induction Method (PRIM) that will allow the unified treatment of bump hunting for every type of common response: Survival, Regression and Classification (SRC).
 
 ========
 License:
