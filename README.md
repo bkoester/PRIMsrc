@@ -6,9 +6,9 @@ Performs a unified treatment of Bump Hunting by Patient Rule Induction Method (P
 ===================================
 Branch #1  (devel) - version 0.7.0:
 ===================================
-The first branch (devel) hosts a development version of the code (version 0.7.0) that is more rigorous and modular. Here, a single internal cross-validation procedure is carried out to simultaneously control model size (#covariates) and model complexity (#peeling steps) before the model is fit. Specifically, it includes a univariate bump hunting variable selection procedure, where model size and model complexity are simultaneously optimized by cross-validation of the cross-validation criterion of choice: CER, LRT, or LHR (see companion paper below for details).
+The first branch (devel) hosts a development version of the code (version 0.7.0) that is more rigorous and modular. Here, a single internal cross-validation procedure is carried out to simultaneously control model size (#covariates) and model complexity (#peeling steps) before the model is fit. Specifically, it does a univariate bump hunting variable selection procedure, where model size and model complexity are simultaneously optimized using the cross-validation criterion of choice: CER, LRT, or LHR (see companion paper below for details).
 
-In addition, this cross-validation procedure is carried out separately of the main function 'sbh()' in a cross-validation function called 'cv.sbh()'. Altogether, this allows a more rigorous treatment of model validation, a better control on the user-end and an improvement of the maintenance on the back-end. In the process, two S3-class objects are created instead of one: an additional S3-class object 'CV' is output by the cross-validation function cv.sbh() and used as input in the main function 'sbh()'. 
+In addition, this cross-validation procedure is carried out separately from the main function 'sbh()' in a cross-validation function called 'cv.sbh()'. Altogether, this allows a more rigorous treatment of model validation, a better control on the user-end and an improvement of the maintenance on the back-end. In the process, two S3-class objects are created instead of one: an additional S3-class object 'CV' is output by the cross-validation function cv.sbh() and used as input in the main function 'sbh()'. 
 
 ========
 License:
