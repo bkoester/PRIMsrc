@@ -261,9 +261,6 @@ CVCOMBREP.CV <- cv.sbh(dataset = Synthetic.1,
                        fdr = NULL, thr = NULL,
                        parallel = FALSE, conf = NULL, seed = 123)
 
-summary(CVCOMBREP.CV)
-print(CVCOMBREP.CV)
-
 \dontrun{
     #===================================================
     # Examples of parallel backend parametrization 
@@ -340,8 +337,6 @@ print(CVCOMBREP.CV)
                               peelcriterion=\"lr\"",
                        fdr = NULL, thr = NULL,
                        parallel = TRUE, conf = conf, seed = 123)
-                           
-    summary(CVCOMBREP.CV)
-    print(CVCOMBREP.CV)
+
 }
 }
