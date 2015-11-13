@@ -84,7 +84,11 @@
     \code{Numeric} scalar. Width of the graphics region in inches. Defaults to 8.5.
   }
   \item{height}{
+<<<<<<< HEAD
     \code{Numeric} scalar. Height of the graphics region in inches. Defaults to 11.5.
+=======
+    \code{Numeric} scalar. Height of the graphics region in inches. Defaults to 5.0.
+>>>>>>> refs/remotes/origin/master
   }
   \item{\dots}{
     Generic arguments passed to other plotting functions.
@@ -164,5 +168,9 @@ plot_profile(object = CVCOMBREP.synt1,
              pch=20, col="black", lty=1, lwd=2, cex=2,
              add.sd = TRUE, add.profiles = TRUE,
              device = NULL, file = "Profile Plot", path=getwd(),
+<<<<<<< HEAD
              horizontal = FALSE, width = 8.5, height = 11.5)
+=======
+             horizontal = FALSE, width = 8.5, height = 5.0)
+>>>>>>> refs/remotes/origin/master
 }
