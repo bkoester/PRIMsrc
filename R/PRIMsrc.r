@@ -1104,7 +1104,7 @@ predict.PRSP <- function (object, newdata, steps, na.action = na.omit, ...) {
 ################
 # Usage         :
 ################
-#                    plot_profile(object,
+#                    plot_profile(cvobj,
 #                                 main=NULL,
 #                                 xlab="Peeling Steps", ylab="Mean Profiles",
 #                                 add.sd=TRUE, add.profiles=TRUE,
@@ -1126,7 +1126,7 @@ predict.PRSP <- function (object, newdata, steps, na.action = na.omit, ...) {
 #
 ##########################################################################################################################################
 
-plot_profile <- function(object,
+plot_profile <- function(cvobj,
                          main=NULL,
                          xlab="Peeling Steps", ylab="Mean Profiles",
                          add.sd=TRUE, add.profiles=TRUE,
@@ -1134,40 +1134,40 @@ plot_profile <- function(object,
                          device=NULL, file="Profile Plot", path=getwd(),
                          horizontal=FALSE, width=8.5, height=11.5, ...) {
 
-  if (!inherits(object, 'CV'))
+  if (!inherits(cvobj, 'CV'))
         stop("Primary argument much be a CV object")
 
-  if (object$success) {
-    if (object$cvtype == "none") {
+  if (cvobj$success) {
+    if (cvobj$cvtype == "none") {
 
       cat("No CV here, so no cross-validated tuning profile to plot!\n")
 
     } else {
 
-      profileplot <- function(object, main, xlab, ylab,
+      profileplot <- function(cvobj, main, xlab, ylab,
                               add.sd, add.profiles,
                               pch, col, lty, lwd, cex, ...) {
 
-        if (is.null(object$fdr) && is.null(object$thr)) {
-            model.size <- ncol(object$x)
+        if (is.null(cvobj$fdr) && is.null(cvobj$thr)) {
+            model.size <- ncol(cvobj$x)
         } else {
-            if (is.null(object$thr)) {
-                model.size <- object$fdr
-            } else if (is.null(object$fdr)) {
-                model.size <- object$thr
+            if (is.null(cvobj$thr)) {
+                model.size <- cvobj$fdr
+            } else if (is.null(cvobj$fdr)) {
+                model.size <- cvobj$thr
             }
         }
         M <- length(model.size)
-        profiles <- object$cvfit$cv.profile$profiles
-        mu.profile <- object$cvfit$cv.profile$mean
-        se.profile <- object$cvfit$cv.profile$se
-        if (object$cvcriterion == "lhr") {
+        profiles <- cvobj$cvfit$cv.profile$profiles
+        mu.profile <- cvobj$cvfit$cv.profile$mean
+        se.profile <- cvobj$cvfit$cv.profile$se
+        if (cvobj$cvcriterion == "lhr") {
           txt <- "LHR"
           optisteps <- apply(X=mu.profile, MARGIN=1, which.max)
-        } else if (object$cvcriterion == "lrt") {
+        } else if (cvobj$cvcriterion == "lrt") {
           txt <- "LRT"
           optisteps <- apply(X=mu.profile, MARGIN=1, which.max)
-        } else if (object$cvcriterion == "cer") {
+        } else if (cvobj$cvcriterion == "cer") {
           txt <- "CER"
           optisteps <- apply(X=mu.profile, MARGIN=1, which.min)
         } else {
@@ -1179,7 +1179,7 @@ plot_profile <- function(object,
         } else {
           par(mfrow=c(subplots, 1), oma=c(0, 0, 0, 0), mar=c(2.5, 2.5, 4.0, 1.5), mgp=c(1.5, 0.5, 0))
         }
-        Lm <- object$cvfit$cv.maxsteps
+        Lm <- cvobj$cvfit$cv.maxsteps
         for (m in 1:M) {
             ylim <- range(0, 1, mu.profile[m,] - se.profile[m,], mu.profile[m,] + se.profile[m,], na.rm=TRUE)
             if (add.profiles) {
@@ -1209,7 +1209,7 @@ plot_profile <- function(object,
 
     if (is.null(device)) {
         cat("Device: ",  dev.cur(), "\n")
-        profileplot(object=object, main=main, xlab=xlab, ylab=ylab,
+        profileplot(cvobj=cvobj, main=main, xlab=xlab, ylab=ylab,
                     add.sd=add.sd, add.profiles=add.profiles,
                     pch=pch, col=col, lty=lty, lwd=lwd, cex=cex)
     } else if (device == "PS") {
@@ -1220,7 +1220,7 @@ plot_profile <- function(object,
         cat("Directory: ", path, "\n")
         postscript(file=paste(path, file, sep=""), width=width, height=height, onefile=TRUE, horizontal=horizontal)
         cat("Device: ",  dev.cur(), "\n")
-        profileplot(object=object, main=main, xlab=xlab, ylab=ylab,
+        profileplot(cvobj=cvobj, main=main, xlab=xlab, ylab=ylab,
                     add.sd=add.sd, add.profiles=add.profiles,
                     pch=pch, col=col, lty=lty, lwd=lwd, cex=cex)
         dev.off()
@@ -1232,7 +1232,7 @@ plot_profile <- function(object,
         cat("Directory: ", path, "\n")
         pdf(file=paste(path, file, sep=""), width=width, height=height, onefile=TRUE, paper=ifelse(test=horizontal, yes="USr", no="US"))
         cat("Device: ",  dev.cur(), "\n")
-        profileplot(object=object, main=main, xlab=xlab, ylab=ylab,
+        profileplot(cvobj=cvobj, main=main, xlab=xlab, ylab=ylab,
                     add.sd=add.sd, add.profiles=add.profiles,
                     pch=pch, col=col, lty=lty, lwd=lwd, cex=cex)
         dev.off()
@@ -1258,7 +1258,7 @@ plot_profile <- function(object,
 ################
 # Usage         :
 ################
-#                    plot_surface(object,
+#                    plot_surface(cvobj,
 #                                 main=NULL,
 #                                 xlab="Model Size (# variables)", ylab="Peeling Steps",
 #                                 theta=5, phi=10, expand=0.2, col.surf="lightblue",
@@ -1280,7 +1280,7 @@ plot_profile <- function(object,
 #
 ##########################################################################################################################################
 
-plot_surface <- function(object,
+plot_surface <- function(cvobj,
                          main=NULL,
                          xlab="Model Size (# variables)", ylab="Peeling Steps",
                          theta=5, phi=10, expand=0.2, col.surf="lightblue",
@@ -1288,49 +1288,49 @@ plot_surface <- function(object,
                          device=NULL, file="Surface Plot", path=getwd(),
                          horizontal=FALSE, width=8.5, height=5.0, ...) {
 
-  if (!inherits(object, 'CV'))
+  if (!inherits(cvobj, 'CV'))
         stop("Primary argument much be a CV object")
 
-  if (object$success) {
-    if (object$cvtype == "none") {
+  if (cvobj$success) {
+    if (cvobj$cvtype == "none") {
 
       cat("No CV here, so no cross-validated tuning profile to plot!\n")
 
-    } else if (is.null(object$fdr) && is.null(object$thr)) {
+    } else if (is.null(cvobj$fdr) && is.null(cvobj$thr)) {
 
       cat("No model selection here, so no mean CV surface to plot!\n")
 
     } else {
 
-       surfaceplot <- function(object, main, xlab, ylab,
+       surfaceplot <- function(cvobj, main, xlab, ylab,
                                theta, phi, expand, col.surf,
                                add.line, pch, col, lty, lwd, cex, ...) {
 
-        if (is.null(object$thr)) {
-            model.size <- object$fdr
-        } else if (is.null(object$fdr)) {
-            model.size <- object$thr
+        if (is.null(cvobj$thr)) {
+            model.size <- cvobj$fdr
+        } else if (is.null(cvobj$fdr)) {
+            model.size <- cvobj$thr
         }
         M <- length(model.size)
         optima <- numeric(M)
         optisteps <- numeric(M)
-        steps <- seq(object$cvfit$cv.maxsteps)
-        mu.profile <- object$cvfit$cv.profile$mean
-        se.profile <- object$cvfit$cv.profile$se
+        steps <- seq(cvobj$cvfit$cv.maxsteps)
+        mu.profile <- cvobj$cvfit$cv.profile$mean
+        se.profile <- cvobj$cvfit$cv.profile$se
 
-        if (object$cvcriterion == "lhr") {
+        if (cvobj$cvcriterion == "lhr") {
           txt <- "LHR"
           for (m in 1:M) {
             optisteps[m] <- which.max(mu.profile[m,])
             optima[m] <- mu.profile[m,optisteps[m]]
           }
-        } else if (object$cvcriterion == "lrt") {
+        } else if (cvobj$cvcriterion == "lrt") {
           txt <- "LRT"
           for (m in 1:M) {
             optisteps[m] <- which.max(mu.profile[m,])
             optima[m] <- mu.profile[m,optisteps[m]]
           }
-        } else if (object$cvcriterion == "cer") {
+        } else if (cvobj$cvcriterion == "cer") {
           txt <- "CER"
           for (m in 1:M) {
             optisteps[m] <- which.min(mu.profile[m,])
@@ -1355,7 +1355,7 @@ plot_surface <- function(object,
 
       if (is.null(device)) {
         cat("Device: ",  dev.cur(), "\n")
-        surfaceplot(object=object, main=main, xlab=xlab, ylab=ylab,
+        surfaceplot(cvobj=cvobj, main=main, xlab=xlab, ylab=ylab,
                     theta=theta, phi=phi, expand=expand, col.surf=col.surf,
                     add.line=add.line, pch=pch, col=col, lty=lty, lwd=lwd, cex=cex)
       } else if (device == "PS") {
@@ -1366,7 +1366,7 @@ plot_surface <- function(object,
         cat("Directory: ", path, "\n")
         postscript(file=paste(path, file, sep=""), width=width, height=height, onefile=TRUE, horizontal=horizontal)
         cat("Device: ",  dev.cur(), "\n")
-        surfaceplot(object=object, main=main, xlab=xlab, ylab=ylab,
+        surfaceplot(cvobj=cvobj, main=main, xlab=xlab, ylab=ylab,
                     theta=theta, phi=phi, expand=expand, col.surf=col.surf,
                     add.line=add.line, pch=pch, col=col, lty=lty, lwd=lwd, cex=cex)
         dev.off()
@@ -1378,7 +1378,7 @@ plot_surface <- function(object,
         cat("Directory: ", path, "\n")
         pdf(file=paste(path, file, sep=""), width=width, height=height, onefile=TRUE, paper=ifelse(test=horizontal, yes="USr", no="US"))
         cat("Device: ",  dev.cur(), "\n")
-        surfaceplot(object=object, main=main, xlab=xlab, ylab=ylab,
+        surfaceplot(cvobj=cvobj, main=main, xlab=xlab, ylab=ylab,
                     theta=theta, phi=phi, expand=expand, col.surf=col.surf,
                     add.line=add.line, pch=pch, col=col, lty=lty, lwd=lwd, cex=cex)
         dev.off()
