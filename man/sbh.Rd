@@ -147,7 +147,7 @@
             \item{cv.stats}: \code{numeric} \code{matrix} of box endpoint quantities of interest (columns) for all peeling steps (rows).
             \item{cv.pval}: \code{numeric} \code{vector} of log-rank permutation p-values of sepraration of survival distributions.}
         }
-    \item{success}{\code{logical} scalar of the returned flag for plotting or not the results of the fitted SBH model.}
+    \item{plot}{\code{logical} scalar of the returned flag for plotting or not the results of the fitted SBH model.}
     \item{config}{\code{List} with 7 fields of parameters used for configuring the parallelization including \code{parallel} and \code{conf}.}
     \item{seed}{User seed(s) used:
         \code{integer} of a single value, if parallelization is used

@@ -22,11 +22,10 @@
   \item{newdata}{
     Either a numeric matrix or numeric vector containing the new input data of same dimensionality as 
     the final \code{PRSP} object of used covariates. A vector will be transformed to a (\#sample x 1) 
-    matrix.
-  }
+    matrix.  }
   \item{steps}{
-    \code{Integer} \code{vector}. Vector of peeling steps at which to predict the box memberships 
-    and box vertices. Defaults to the last peeling step only.
+    \code{Integer} \code{vector}. Vector of peeling steps at which to predict the box memberships and box vertices. 
+    Defaults to the last peeling step only.
   }
   \item{na.action}{
     A function to specify the action to be taken if NAs are found.
@@ -113,7 +112,7 @@
                            parallel = FALSE, conf = NULL, seed = 123)
 
     n <- 100
-    p <- 3
+    p <- length(CVCOMBREP.synt1$cvfit$cv.used)
     x <- matrix(data=runif(n=n*p, min=0, max=1),
                 nrow=n, ncol=p, byrow=FALSE,
                 dimnames=list(1:n, paste("X", 1:p, sep="")))
