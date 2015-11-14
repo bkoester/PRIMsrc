@@ -222,3 +222,9 @@ inst/doc/PRIMsrc_0.6.3.pdf
 man/plot_profile.Rd
 man/PrimSRC-package.Rd
 man/PrimSRC-package.Rd
+DESCRIPTION
+inst/NEWS
+man/plot.Rd
+man/predict.Rd
+R/PRIMsrc.internal.r
+R/PRIMsrc.r
