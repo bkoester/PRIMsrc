@@ -161,3 +161,8 @@ o RELEASE 0.6.3
 - Updates in the CITATION file.  
 - Built and tested under R-devel (2015-11-04 r69597) and release update to GitHub.
 ---------------------------------------------------------------------------------
+Date   : 2015-11-13
+o RELEASE 0.7.0
+- Initial release of branch #1 ("devel") to GitHub.
+---------------------------------------------------------------------------------
+
