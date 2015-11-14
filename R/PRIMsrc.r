@@ -105,7 +105,6 @@ cv.sbh <- function(dataset,
   cat("Variable pre-selection conservativeness: ", disp(x=conservative), "\n")
   cat("Cross-validation technique: ", disp(x=cvtype), "\n")
   cat("Cross-validation criterion: ", disp(x=cvcriterion), "\n")
-  cat("Computation of permutation p-values:", cpv, "\n")
   cat("Peeling criterion: ", disp(x=peelcriterion), "\n")
   cat("Parallelization:", parallel, "\n")
   cat("\n")
@@ -208,11 +207,7 @@ clusterExport(cl=cl,
             CV.mean.profile <- NULL
             CV.se.profile <- NULL
         } else if ((cvtype == "averaged") || (cvtype == "combined")) {
-            if ((cvcriterion == "lhr") || (cvcriterion == "lrt")) {
-                CV.profile.array <- list2array(list=CV.profile.rep, fill=NA, coltrunc=CV.maxsteps)
-            } else if (cvcriterion == "cer") {
-                CV.profile.array <- list2array(list=CV.profile.rep, fill=NA, coltrunc=CV.maxsteps)
-            }
+            CV.profile.array <- list2array(list=CV.profile.rep, fill=NA, coltrunc=CV.maxsteps)
             dimnames(CV.profile.array) <- list(paste("model", 1:M, sep=""), paste("step", 0:(CV.maxsteps-1), sep=""), 1:B)
             CV.mean.profile <- apply(X=CV.profile.array, MARGIN=c(1,2), FUN=mean, na.rm=TRUE)
             CV.se.profile <- apply(X=CV.profile.array, MARGIN=c(1,2), FUN=sd, na.rm=TRUE)
@@ -383,7 +378,7 @@ sbh <- function(cvobj=NULL,
         CV.model <- cvobj$cvfit$cv.model
         CV.sel <- cvobj$cvfit$cv.sel[[CV.model]]
         CV.sign <- cvobj$cvfit$cv.sign[[CV.model]]
-        
+
         # Pre-selected covariates
         x.sel <- x[, CV.sel, drop=FALSE]
         p.sel <- length(CV.sel)
@@ -545,10 +540,8 @@ clusterExport(cl=cl,
     rownames(CV.boxind) <- paste("step", 0:(CV.nsteps-1), sep="")
     colnames(CV.boxind) <- rownames(x.sel)
 
-    # Trace values of selected covariates over the replicates (by step)
-    # Distribution of trace values over the replicates (by step)
-    # Modal trace values over the replicates (by step)
-    cat("Generating cross-validated modal trace values of selected covariates over the replicates ...\n")
+    # Modal trace values (over the replicates) of covariate usage at each step
+    cat("Generating cross-validated modal trace values of covariate usage at each step ...\n")
     trace.dist <- lapply.array(X=CV.trace,
                                rowtrunc=CV.nsteps,
                                FUN=function(x){if (all(is.na(x)))
@@ -561,11 +554,18 @@ clusterExport(cl=cl,
     trace.mode <- apply(X=trace.dist,
                         FUN=function(x){as.numeric(names(which.max(table(x, useNA="no"))))},
                         MARGIN=1)
-    names(trace.mode) <- paste("step", 0:(CV.nsteps-1), sep="")
-    CV.trace <- list("distribution"=trace.dist, "mode"=trace.mode)
+    mat <- pmatch(x=names(CV.sel)[trace.mode], table=colnames(x), nomatch=NA, duplicates.ok=TRUE)
+    CV.trace <- c(0, mat[!is.na(mat)])
+    names(CV.trace) <- paste("step", 0:(CV.nsteps-1), sep="")
 
-    # Box boundaries and box peeling rules for each step
-    cat("Generating cross-validated box rules for each step ...\n")
+    # Used covariates for peeling at each step, based on covariate trace modal values
+    CV.used <- sort(unique(as.numeric(CV.trace[-1])))
+    names(CV.used) <- colnames(x)[CV.used]
+    cat("Covariates used for peeling at each step, based on covariate trace modal values:\n")
+    print(CV.used)
+
+    # Box rules for the pre-selected covariates at each step
+    cat("Generating cross-validated box rules for the pre-selected covariates at each step ...\n")
     CV.boxcut.mu <- round(lapply.array(X=CV.boxcut, rowtrunc=CV.nsteps, FUN=function(x){mean(x, na.rm=TRUE)}, MARGIN=1:2), digits=decimals)
     CV.boxcut.sd <- round(lapply.array(X=CV.boxcut, rowtrunc=CV.nsteps, FUN=function(x){sd(x, na.rm=TRUE)}, MARGIN=1:2), digits=decimals)
     rownames(CV.boxcut.mu) <- paste("step", 0:(CV.nsteps-1), sep="")
@@ -635,7 +635,7 @@ clusterExport(cl=cl,
                            varsel=CV.sel, varsign=CV.sign,
                            A=A, K=K, arg=arg,
                            obs.chisq=CV.stats$mean$cv.lrt,
-                           parallel=TRUE, conf=conf)
+                           parallel=parallel, conf=conf)
     } else {
         CV.pval <- NULL
     }
@@ -662,15 +662,16 @@ clusterExport(cl=cl,
     CV.stats <- NULL
     # P-values for each step
     CV.pval <- NULL
-    
+
   }
 
   # Creating the return object 'CV.fit'
   CV.fit <- list("cv.maxsteps"=CV.maxsteps,
                  "cv.nsteps"=CV.nsteps,
                  "cv.trace"=CV.trace,
-                 "cv.sel"=CV.sel,
                  "cv.sign"=CV.sign,
+                 "cv.sel"=CV.sel,
+                 "cv.used"=CV.used,
                  "cv.boxind"=CV.boxind,
                  "cv.rules"=CV.rules,
                  "cv.stats"=CV.stats,
@@ -679,14 +680,14 @@ clusterExport(cl=cl,
 
   # Returning the final object of class 'PRSP'
   return(structure(list("x"=x, "times"=times, "status"=status,
-                        "B"=B, "K"=K, "A"=A, "cpv"=cpv, 
+                        "B"=B, "K"=K, "A"=A, "cpv"=cpv,
                         "decimals"=decimals, "arg"=arg,
                         "cvtype"=cvtype,
                         "cvcriterion"=cvcriterion,
                         "conservative"=conservative,
                         "probval"=probval, "timeval"=timeval,
                         "cvfit"=CV.fit,
-                        "success"=success,
+                        "plot"=success,
                         "config"=list("parallel"=parallel,
                                       "names"=conf$names,
                                       "cpus"=conf$cpus,
@@ -769,7 +770,6 @@ summary.PRSP <- function(object, ...) {
   alpha <- NULL
   beta <- NULL
   minn <- NULL
-  L <- NULL
   peelcriterion <- NULL
   eval(parse( text=unlist(strsplit(x=object$arg, split=",")) ))
 
@@ -788,7 +788,7 @@ summary.PRSP <- function(object, ...) {
   } else {
     cat("'PRSP' object without cross-validation and replications\n\n", sep="")
   }
-  cat("Variable pre-selection conservativeness: ", disp(x=conservative), "\n\n")
+  cat("Variable pre-selection conservativeness: ", disp(x=object$conservative), "\n\n")
   cat("PRSP parameters:\n")
   cat("\t Peeling criterion: ", disp(x=peelcriterion), "\n")
   cat("\t Peeling percentile: ", alpha*100, "%\n")
@@ -834,7 +834,7 @@ print.PRSP <- function(x, ...) {
 
   obj <- x
   cat("Selected covariates:\n")
-  print(obj$cvfit$cv.selected)
+  print(obj$cvfit$cv.sel)
   cat("\n")
 
   cat("Used covariates:\n")
@@ -1312,11 +1312,11 @@ plot_surface <- function(cvobj,
                                add.line, pch, col, lty, lwd, cex, ...) {
 
         if (is.null(cvobj$thr)) {
-            model.size <- cvobj$fdr
+            models <- cvobj$fdr
         } else if (is.null(cvobj$fdr)) {
-            model.size <- cvobj$thr
+            models <- cvobj$thr
         }
-        M <- length(model.size)
+        M <- length(models)
         optima <- numeric(M)
         optisteps <- numeric(M)
         steps <- seq(cvobj$cvfit$cv.maxsteps)
@@ -1344,14 +1344,14 @@ plot_surface <- function(cvobj,
         } else {
           stop("Invalid CV criterion.\n")
         }
-        res <- persp(x=model.size, y=steps, z=mu.profile,
+        res <- persp(x=models, y=steps, z=mu.profile,
                      theta=theta, phi=phi, expand=expand,
                      col=col.surf, shade=TRUE,
                      xlab=xlab, ylab=ylab, zlab=txt, main=main,
                      ticktype = "detailed", box=TRUE, nticks=10, ...)
         if (add.line) {
-            points(trans3d(x=model.size, y=optisteps, z=optima, pmat=res), col=col, pch=pch, cex=cex, ...)
-            lines(trans3d(x=model.size, y=optisteps, z=optima, pmat=res), col=col, lwd=lwd, lty=lty, ...)
+            points(trans3d(x=models, y=optisteps, z=optima, pmat=res), col=col, pch=pch, cex=cex, ...)
+            lines(trans3d(x=models, y=optisteps, z=optima, pmat=res), col=col, lwd=lwd, lty=lty, ...)
         }
         if (!is.null(main)) {
             mtext(text=main, cex=1, side=3, outer=TRUE)
@@ -1824,7 +1824,7 @@ plot_boxkm <- function(object,
   if (!inherits(object, 'PRSP'))
         stop("Primary argument much be an object of class 'PRSP' \n")
 
-  if (object$success) {
+  if (object$plot) {
 
     boxkmplot <- function(object,
                           main, xlab, ylab,

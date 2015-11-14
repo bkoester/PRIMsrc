@@ -177,7 +177,7 @@ cv.tune.rep <- function(x, times, status,
         M <- length(thr)
     }
   }
-  
+
   n <- nrow(x)
 
   CV.maxsteps <- vector(mode="list", length=B)
@@ -282,18 +282,12 @@ cv.tune.rep <- function(x, times, status,
             }
         }
     }
-    
-    CV.thrsteps <- sapply(CV.support.tmp, function(x) {max(which(x >= max(minn/n, beta)))})
-    CV.maxsteps[[b]] <- ceiling(mean(CV.thrsteps))
-    
+    CV.maxsteps[[b]] <- ceiling(mean(CV.maxsteps.tmp))
+
     if (cvtype == "none") {
         CV.profile[[b]] <- NULL
     } else if ((cvtype == "averaged") || (cvtype == "combined")) {
-        if ((cvcriterion == "lhr") || (cvcriterion == "lrt")) {
-                CV.profile[[b]] <- list2mat(list=CV.profile.tmp, fill=0, coltrunc=CV.maxsteps[[b]])
-        } else if (cvcriterion == "cer") {
-                CV.profile[[b]] <- list2mat(list=CV.profile.tmp, fill=1, coltrunc=CV.maxsteps[[b]])
-        }
+        CV.profile[[b]] <- list2mat(list=CV.profile.tmp, fill=NA, coltrunc=CV.maxsteps[[b]])
         dimnames(CV.profile[[b]]) <- list(paste("model", 1:M, sep=""), paste("step", 0:(CV.maxsteps[[b]]-1), sep=""))
     } else {
         stop("Invalid CV type option \n")
@@ -312,6 +306,7 @@ cv.tune.rep <- function(x, times, status,
               "seed"=seed))
 }
 ##########################################################################################################################################
+
 
 
 
@@ -509,6 +504,9 @@ cv.ave.tune <- function(x, times, status,
                         cvcriterion,
                         seed) {
 
+  n <- nrow(x)
+  p <- ncol(x)
+
   folds <- cv.folds(y=status, K=K, seed=seed)
   maxsteps <- numeric(K)
   sel.list <- vector(mode="list", length=K)
@@ -630,7 +628,7 @@ cv.ave.tune <- function(x, times, status,
     # Each entry or row signifies a step
     CV.boxcut <- matrix(data=NA, nrow=CV.Lm, ncol=p, dimnames=list(paste("step", 0:(CV.Lm-1), sep=""), colnames(x)))
     for (l in 1:CV.Lm) {
-        summincut <- matrix(NA, K, ncol(x))
+        summincut <- matrix(NA, K, p)
         for (k in 1:K) {
             summincut[k,] <- boxcut.list[[k]][l,]
         }
@@ -638,10 +636,10 @@ cv.ave.tune <- function(x, times, status,
     }
     rownames(CV.boxcut) <- paste("step", 0:(CV.Lm-1), sep="")
     colnames(CV.boxcut) <- colnames(x)
-  
+
     # Get the box membership indicator vector of all observations for each step from all the folds
     # Based on the corresponding averaged box over the folds
-    CV.boxind <- matrix(NA, nrow=CV.Lm, ncol=nrow(x))
+    CV.boxind <- matrix(NA, nrow=CV.Lm, ncol=n)
     for (l in 1:CV.Lm) {
         boxcut <- CV.boxcut[l, ] * varsign
         x.cut <- t(t(x) * varsign)
@@ -652,7 +650,7 @@ cv.ave.tune <- function(x, times, status,
     colnames(CV.boxind) <- rownames(x)
 
     # Get the adjusted cross-validated maximum peeling length, thresholded by minimal box support
-    CV.Lm <- max(which(apply(CV.boxind, 1, function(x) {length(which(x))/nrow(x) >= max(minn/nrow(x), beta)})))
+    CV.Lm <- max(which(apply(CV.boxind, 1, function(x) {length(which(x))/n >= max(minn/n, beta)})))
 
     # Get the selected covariates from all folds
     varfreq <- table(unlist(sel.list), useNA="no")
@@ -766,7 +764,11 @@ cv.comb.tune <- function(x, times, status,
                          cvcriterion,
                          seed) {
 
+  n <- nrow(x)
+  p <- ncol(x)
+
   folds <- cv.folds(y=status, K=K, seed=seed)
+  ord <- folds$foldkey
   maxsteps <- numeric(K)
   times.list <- vector(mode="list", length=K)
   status.list <- vector(mode="list", length=K)
@@ -845,14 +847,13 @@ cv.comb.tune <- function(x, times, status,
     colnames(CV.boxind) <- rownames(x)
 
     # Get the adjusted cross-validated maximum peeling length, thresholded by minimal box support
-    CV.Lm <- max(which(apply(CV.boxind, 1, function(x) {length(which(x))/nrow(x) >= max(minn/nrow(x), beta)})))
-        
+    CV.Lm <- max(which(apply(CV.boxind, 1, function(x) {length(which(x))/n >= max(minn/n, beta)})))
+
     # Get the adjusted test box membership indicator vector of all observations for each step from all the folds
     CV.boxind <- CV.boxind[1:CV.Lm,,drop=FALSE]
 
     # Concatenates the observations of test times and status from all folds
     # Re-ordered by initial order of observations
-    ord <- folds$key
     CV.times <- unlist(times.list)[ord]
     CV.status <- unlist(status.list)[ord]
 
@@ -1040,7 +1041,7 @@ cv.ave.box <- function(x, times, status,
     }
     rownames(CV.boxcut) <- paste("step", 0:(CV.Lm-1), sep="")
     colnames(CV.boxcut) <- colnames(x)
-  
+
     # Get the box membership indicator vector of all observations for each step from all the folds
     # Based on the corresponding averaged box over the folds
     CV.boxind <- matrix(NA, nrow=CV.Lm, ncol=n)
@@ -1055,7 +1056,7 @@ cv.ave.box <- function(x, times, status,
 
     # Get the adjusted cross-validated maximum peeling length, thresholded by minimal box support
     CV.Lm <- max(which(apply(CV.boxind, 1, function(x) {length(which(x))/n >= max(minn/n, beta)})))
-        
+
     # Get the adjusted test box defnition and membership indicator vector of all observations for each step from all the folds
     CV.boxind <- CV.boxind[1:CV.Lm,,drop=FALSE]
     CV.boxcut <- CV.boxcut[1:CV.Lm,,drop=FALSE]
@@ -1202,6 +1203,7 @@ cv.comb.box <- function(x, times, status,
                            varsign=varsign,
                            K=K, arg=arg, seed=seed)
 
+  ord <- fold.obj$key
   cvtimes.list <- fold.obj$cvtimes.list
   cvstatus.list <- fold.obj$cvstatus.list
   trace.list <- fold.obj$trace.list
@@ -1220,13 +1222,12 @@ cv.comb.box <- function(x, times, status,
 
   # Get the adjusted cross-validated maximum peeling length, thresholded by minimal box support
   CV.Lm <- max(which(apply(CV.boxind, 1, function(x) {length(which(x))/n >= max(minn/n, beta)})))
-        
+
   # Get the adjusted test box membership indicator vector of all observations for each step from all the folds
   CV.boxind <- CV.boxind[1:CV.Lm,,drop=FALSE]
-    
+
   # Concatenates the observations of test times and status from all folds
   # Re-ordered by initial order of observations
-  ord <- fold.obj$key
   CV.times <- unlist(cvtimes.list)[ord]
   CV.status <- unlist(cvstatus.list)[ord]
 
@@ -1517,7 +1518,7 @@ cv.comb.fold <- function(x, times, status,
   }
 
   return(list("maxsteps"=maxsteps,
-              "key"=folds$key,
+              "key"=folds$foldkey,
               "cvtimes.list"=cvtimes.list,
               "cvstatus.list"=cvstatus.list,
               "boxcut.list"=boxcut.list,
@@ -1730,6 +1731,7 @@ peel.box <- function(traindata, traintime, trainstatus, varsign, arg) {
                    varsign=varsign,
                    alpha=alpha,
                    beta=beta,
+                   minn=minn,
                    peelcriterion=peelcriterion)
 
   # Returning the final results
@@ -1790,6 +1792,7 @@ cv.tune <- function(traindata, traintime, trainstatus,
                      varsign=NULL,
                      alpha=alpha,
                      beta=beta,
+                     minn=minn,
                      peelcriterion=peelcriterion)
     univarsign[j] <- prsp.fit$varsign
     pval[j] <- prsp.fit$pval
@@ -1824,6 +1827,7 @@ cv.tune <- function(traindata, traintime, trainstatus,
                           varsign=univarsign[varsel],
                           alpha=alpha,
                           beta=beta,
+                          minn=minn,
                           peelcriterion=peelcriterion)
         maxsteps <- model.fit$maxsteps
         varsign <- model.fit$varsign
@@ -1847,6 +1851,7 @@ cv.tune <- function(traindata, traintime, trainstatus,
                           varsign=univarsign[varsel],
                           alpha=alpha,
                           beta=beta,
+                          minn=minn,
                           peelcriterion=peelcriterion)
         maxsteps <- model.fit$maxsteps
         varsign <- model.fit$varsign
@@ -1869,7 +1874,7 @@ cv.tune <- function(traindata, traintime, trainstatus,
 #################
 # Usage         :
 ################
-#                    prsp (traindata, traintime, trainstatus, L, varsign, alpha, beta, peelcriterion)
+#                    prsp (traindata, traintime, trainstatus, L, varsign, alpha, beta, minn, peelcriterion)
 #
 ################
 # Description   :
@@ -1885,7 +1890,7 @@ cv.tune <- function(traindata, traintime, trainstatus,
 #
 ##########################################################################################################################################
 
-prsp <- function(traindata, traintime, trainstatus, L, varsign, alpha, beta, peelcriterion) {
+prsp <- function(traindata, traintime, trainstatus, L, varsign, alpha, beta, minn, peelcriterion) {
 
   digits <- getOption("digits")
   n <- nrow(traindata)                                   # Number of training samples
@@ -2068,15 +2073,15 @@ cv.folds <- function (y, K, seed) {
 
     if (!is.null(seed))
         set.seed(seed)
-   
+
     n <- length(y)
     if (n < 2)
         stop("The number of data points `n` must be at least two\n")
-  
+
     K <- round(rep(K, length.out = 1))
     if (!isTRUE((K >= 1) && K <= n))
         stop(paste("`K` is outside the allowable range {1,...,", n, "} \n", sep=""))
-  
+
     y <- as.numeric(y)
     ylev <- levels(factor(y))
     ynlev <- length(ylev)
@@ -2117,7 +2122,7 @@ cv.folds <- function (y, K, seed) {
     }
     foldkey <- pmatch(x=1:n, table=ord)
     folds <- list(n=n, K=K, perm=fold$index, permkey=permkey, which=fold$which, foldkey=foldkey, seed=seed)
-    
+
     return(folds)
 }
 ##########################################################################################################################################
@@ -2337,22 +2342,12 @@ list2array <- function (list, rowtrunc=NULL, coltrunc=NULL, sub=NULL, fill=NA) {
       } else if (coltrunc == "max") {
         adjusted.list <- lapply(my.list, function(x) {cbind(x, matrix(data=fill, nrow=nrow(x), ncol=max.col - ncol(x)))})
       } else {
-<<<<<<< HEAD
-        if (coltrunc <= min.col) {
-            adjusted.list <- lapply(my.list, function(x) {x[,1:coltrunc,drop=FALSE]})
-        } else if ((coltrunc > min.col) & (coltrunc <= max.col)) {
-            adjusted.list <- lapply(my.list, function(x) {cbind(x, matrix(data=fill, nrow=nrow(x), ncol=max(0,coltrunc - ncol(x))))})
-        } else {
-            adjusted.list <- lapply(my.list, function(x) {cbind(x, matrix(data=fill, nrow=nrow(x), ncol=coltrunc - ncol(x)))})
-        }
-=======
         adjusted.list <- lapply(my.list, function(x, coltrunc) {if (coltrunc <= ncol(x)) {
                                                                   x[,1:coltrunc,drop=FALSE]
                                                                 } else if (coltrunc > ncol(x)) {
                                                                   cbind(x, matrix(data=fill, nrow=nrow(x), ncol=coltrunc - ncol(x)))
                                                                 }
                                                                 }, coltrunc)
->>>>>>> refs/remotes/origin/master
       }
     } else {
         adjusted.list <- lapply(my.list, function(x) {cbind(x, matrix(data=fill, nrow=nrow(x), ncol=max.col - ncol(x)))})
@@ -2363,15 +2358,6 @@ list2array <- function (list, rowtrunc=NULL, coltrunc=NULL, sub=NULL, fill=NA) {
       } else if (rowtrunc == "max") {
         adjusted.list <- lapply(adjusted.list, function(x) {rbind(x, matrix(data=fill, nrow=max.row - nrow(x), ncol=ncol(x)))})
       } else {
-<<<<<<< HEAD
-        if (rowtrunc <= min.row) {
-            adjusted.list <- lapply(adjusted.list, function(x) {x[1:rowtrunc,,drop=FALSE]})
-        } else if ((rowtrunc > min.row) & (rowtrunc <= max.row)) {
-            adjusted.list <- lapply(adjusted.list, function(x) {rbind(x, matrix(data=fill, nrow=max(0,rowtrunc - nrow(x)), ncol=ncol(x)))})
-        } else {
-            adjusted.list <- lapply(adjusted.list, function(x) {rbind(x, matrix(data=fill, nrow=rowtrunc - nrow(x), ncol=ncol(x)))})
-        }
-=======
 
         adjusted.list <- lapply(my.list, function(x, rowtrunc) {if (rowtrunc <= nrow(x)) {
                                                                   x[1:rowtrunc,,drop=FALSE]
@@ -2379,7 +2365,6 @@ list2array <- function (list, rowtrunc=NULL, coltrunc=NULL, sub=NULL, fill=NA) {
                                                                   rbind(x, matrix(data=fill, nrow=rowtrunc - nrow(x), ncol=ncol(x)))
                                                                 }
                                                                 }, rowtrunc)
->>>>>>> refs/remotes/origin/master
       }
     } else {
         adjusted.list <- lapply(adjusted.list, function(x) {rbind(x, matrix(data=fill, nrow=max.row - nrow(x), ncol=ncol(x)))})
@@ -2437,22 +2422,12 @@ list2mat <- function (list, coltrunc=NULL, sub=NULL, fill=NA) {
       } else if (coltrunc == "max") {
         adjusted.list <- lapply(my.list, function(x) {c(x, rep(fill, max.col - length(x)))})
       } else {
-<<<<<<< HEAD
-        if (coltrunc <= min.col) {
-            adjusted.list <- lapply(my.list, function(x) {x[1:coltrunc]})
-        } else if ((coltrunc > min.col) & (coltrunc <= max.col)) {
-            adjusted.list <- lapply(my.list, function(x) {c(x, rep(fill, max(0,coltrunc - length(x))))})
-        } else {
-            adjusted.list <- lapply(my.list, function(x) {c(x, rep(fill, coltrunc - length(x)))})
-        }
-=======
         adjusted.list <- lapply(my.list, function(x, coltrunc) {if (coltrunc <= length(x)) {
                                                                   x[1:coltrunc]
                                                                 } else if (coltrunc > length(x)) {
                                                                   c(x, rep(fill, times=coltrunc - length(x)))
                                                                 }
                                                                 }, coltrunc)
->>>>>>> refs/remotes/origin/master
       }
     } else {
         adjusted.list <- lapply(my.list, function(x) {c(x, rep(fill, max.col - length(x)))})
