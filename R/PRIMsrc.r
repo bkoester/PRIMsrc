@@ -151,19 +151,6 @@ cv.sbh <- function(dataset,
       clusterSetRNGStream(cl=cl, iseed=seed)
       a <- ceiling(B/conf$cpus)
       B <- a*conf$cpus
-######################################################################################################
-clusterEvalQ(cl=cl, expr=library("survival"))
-clusterEvalQ(cl=cl, expr=library("Hmisc"))
-clusterExport(cl=cl,
-              varlist=list("cv.tune.rep",
-                           "cv.ave.tune", "cv.comb.tune",
-                           "cv.folds", "cv.tune", "prsp",
-                           "updatecut", "endpoints",
-                           "is.empty", "cbindlist",
-                           "list2mat", "list2array",
-                           "lapply.mat", "lapply.array"),
-              envir=.GlobalEnv)
-######################################################################################################
       obj.cl <- clusterCall(cl=cl, fun=cv.tune.rep,
                             x=x, times=times, status=status,
                             B=a, K=K, arg=arg,
@@ -367,6 +354,7 @@ sbh <- function(cvobj=NULL,
     if (!inherits(cvobj, 'CV'))
         stop("Primary argument much be an object of class 'CV'")
     if (cvobj$success) {
+        digits <- getOption("digits")
         # Retrieving data
         x <- cvobj$x
         times <- cvobj$times
@@ -469,20 +457,6 @@ sbh <- function(cvobj=NULL,
     clusterSetRNGStream(cl=cl, iseed=seed)
     a <- ceiling(B/conf$cpus)
     B <- a*conf$cpus
-######################################################################################################
-clusterEvalQ(cl=cl, expr=library("survival"))
-clusterEvalQ(cl=cl, expr=library("Hmisc"))
-clusterExport(cl=cl,
-              varlist=list("cv.tune.rep",
-                           "cv.ave.box", "cv.comb.box",
-                           "cv.ave.fold", "cv.comb.fold",
-                           "cv.ave.peel", "cv.comb.peel",
-                           "cv.folds", "peel.box", "prsp",
-                           "updatecut", "endpoints",
-                           "is.empty", "cbindlist", "list2mat", "list2array",
-                           "lapply.mat", "lapply.array"),
-              envir=.GlobalEnv)
-######################################################################################################
     obj.cl <- clusterCall(cl=cl, fun=cv.box.rep,
                           x=x.sel, times=times, status=status,
                           B=a, K=K, arg=arg,
@@ -1031,7 +1005,10 @@ plot.PRSP <- function(x,
 ################
 #Usage         :
 ################
-#                   predict(object, newdata, steps, na.action = na.omit, ...)
+#                   predict(object, 
+#                           newdata, 
+#                           steps, 
+#                           na.action = na.omit, ...)
 #
 ################
 # Description   :
@@ -1047,7 +1024,10 @@ plot.PRSP <- function(x,
 #
 ##########################################################################################################################################
 
-predict.PRSP <- function (object, newdata, steps, na.action = na.omit, ...) {
+predict.PRSP <- function (object, 
+                          newdata, 
+                          steps, 
+                          na.action = na.omit, ...) {
 
   if (!inherits(object, 'PRSP'))
         stop("Primary argument much be an object of class 'PRSP' \n")
@@ -1145,7 +1125,7 @@ plot_profile <- function(cvobj,
   if (cvobj$success) {
     if (cvobj$cvtype == "none") {
 
-      cat("No CV here, so no cross-validated tuning profile to plot!\n")
+      cat("No CV, so no cross-validated tuning profile to plot here!\n")
 
     } else {
 
@@ -1186,7 +1166,7 @@ plot_profile <- function(cvobj,
         }
         Lm <- cvobj$cvfit$cv.maxsteps
         for (m in 1:M) {
-            ylim <- range(0, 1, mu.profile[m,] - se.profile[m,], mu.profile[m,] + se.profile[m,], na.rm=TRUE)
+            ylim <- range(0, 1, profiles[m,,], na.rm=TRUE)
             if (add.profiles) {
                 matplot(profiles[m,,], axes=FALSE, type="b",
                         xlab="", ylab="",
@@ -1248,7 +1228,7 @@ plot_profile <- function(cvobj,
   } else {
 
     cat("Either the covariate pre-selection or the Survival Bump Hunting modeling failed for this dataset.\n
-        So, there is nothing to plot here.\n")
+        So, no cross-validated tuning profile to plot here!\n")
 
   }
   invisible()
@@ -1263,13 +1243,14 @@ plot_profile <- function(cvobj,
 ################
 # Usage         :
 ################
-#                    plot_surface(cvobj,
-#                                 main=NULL,
-#                                 xlab="Model Size (# variables)", ylab="Peeling Steps",
-#                                 theta=5, phi=10, expand=0.2, col.surf="lightblue",
-#                                 add.line=FALSE, col="yellow", pch=20, lty=1, lwd=1, cex=1,
-#                                 device=NULL, file="Surface Plot", path=getwd(),
-#                                 horizontal=FALSE, width=8.5, height=5.0, ...)
+#                    plot_surface (cvobj,
+#                                  main=NULL,
+#                                  xlab="Model Size (# variables)", ylab="Peeling Steps",
+#                                  theta=5, phi=10, expand=0.2, col="lightblue",
+#                                  add.line=FALSE, 
+#                                  col.line="yellow", lty.line=1, lwd.line=1, pch.line=20, cex.line=1,
+#                                  device=NULL, file="Surface Plot", path=getwd(),
+#                                  horizontal=FALSE, width=8.5, height=5.0, ...)
 #
 ################
 # Description   :
@@ -1288,8 +1269,9 @@ plot_profile <- function(cvobj,
 plot_surface <- function(cvobj,
                          main=NULL,
                          xlab="Model Size (# variables)", ylab="Peeling Steps",
-                         theta=5, phi=10, expand=0.2, col.surf="lightblue",
-                         add.line=FALSE, col="yellow", pch=20, lty=1, lwd=1, cex=1,
+                         theta=5, phi=10, expand=0.2, col="lightblue",
+                         add.line=FALSE, 
+                         col.line="yellow", lty.line=1, lwd.line=1, pch.line=20, cex.line=1,
                          device=NULL, file="Surface Plot", path=getwd(),
                          horizontal=FALSE, width=8.5, height=5.0, ...) {
 
@@ -1299,17 +1281,19 @@ plot_surface <- function(cvobj,
   if (cvobj$success) {
     if (cvobj$cvtype == "none") {
 
-      cat("No CV here, so no cross-validated tuning profile to plot!\n")
+      cat("No CV, so no cross-validated tuning surface to plot here!\n")
 
     } else if (is.null(cvobj$fdr) && is.null(cvobj$thr)) {
 
-      cat("No model selection here, so no mean CV surface to plot!\n")
+      cat("No model selection, so no cross-validated tuning surface to plot here!\n")
 
     } else {
 
        surfaceplot <- function(cvobj, main, xlab, ylab,
-                               theta, phi, expand, col.surf,
-                               add.line, pch, col, lty, lwd, cex, ...) {
+                               theta, phi, expand, col,
+                               add.line, 
+                               col.line, lty.line, lwd.line, 
+                               pch.line, cex.line, ...) {
 
         if (is.null(cvobj$thr)) {
             models <- cvobj$fdr
@@ -1322,7 +1306,6 @@ plot_surface <- function(cvobj,
         steps <- seq(cvobj$cvfit$cv.maxsteps)
         mu.profile <- cvobj$cvfit$cv.profile$mean
         se.profile <- cvobj$cvfit$cv.profile$se
-
         if (cvobj$cvcriterion == "lhr") {
           txt <- "LHR"
           for (m in 1:M) {
@@ -1345,13 +1328,12 @@ plot_surface <- function(cvobj,
           stop("Invalid CV criterion.\n")
         }
         res <- persp(x=models, y=steps, z=mu.profile,
-                     theta=theta, phi=phi, expand=expand,
-                     col=col.surf, shade=TRUE,
                      xlab=xlab, ylab=ylab, zlab=txt, main=main,
-                     ticktype = "detailed", box=TRUE, nticks=10, ...)
+                     theta=theta, phi=phi, expand=expand, col=col,
+                     shade=TRUE, ticktype = "detailed", box=TRUE, nticks=10, ...)
         if (add.line) {
-            points(trans3d(x=models, y=optisteps, z=optima, pmat=res), col=col, pch=pch, cex=cex, ...)
-            lines(trans3d(x=models, y=optisteps, z=optima, pmat=res), col=col, lwd=lwd, lty=lty, ...)
+            points(trans3d(x=models, y=optisteps, z=optima, pmat=res), col=col.line, pch=pch.line, cex=cex.line, ...)
+            lines(trans3d(x=models, y=optisteps, z=optima, pmat=res), col=col.line, lwd=lwd.line, lty=lty.line, ...)
         }
         if (!is.null(main)) {
             mtext(text=main, cex=1, side=3, outer=TRUE)
@@ -1361,8 +1343,10 @@ plot_surface <- function(cvobj,
       if (is.null(device)) {
         cat("Device: ",  dev.cur(), "\n")
         surfaceplot(cvobj=cvobj, main=main, xlab=xlab, ylab=ylab,
-                    theta=theta, phi=phi, expand=expand, col.surf=col.surf,
-                    add.line=add.line, pch=pch, col=col, lty=lty, lwd=lwd, cex=cex)
+                    theta=theta, phi=phi, expand=expand, col=col,
+                    add.line=add.line,
+                    col.line=col.line, lty.line=lty.line, lwd.line=lwd.line, 
+                    pch.line=pch.line, cex.line=cex.line)
       } else if (device == "PS") {
         path <- normalizePath(path=paste(path, "/", sep=""), winslash="\\", mustWork=FALSE)
         file <- paste(file, ".ps", sep="")
@@ -1372,8 +1356,10 @@ plot_surface <- function(cvobj,
         postscript(file=paste(path, file, sep=""), width=width, height=height, onefile=TRUE, horizontal=horizontal)
         cat("Device: ",  dev.cur(), "\n")
         surfaceplot(cvobj=cvobj, main=main, xlab=xlab, ylab=ylab,
-                    theta=theta, phi=phi, expand=expand, col.surf=col.surf,
-                    add.line=add.line, pch=pch, col=col, lty=lty, lwd=lwd, cex=cex)
+                    theta=theta, phi=phi, expand=expand, col=col,
+                    add.line=add.line,
+                    col.line=col.line, lty.line=lty.line, lwd.line=lwd.line, 
+                    pch.line=pch.line, cex.line=cex.line)
         dev.off()
       } else if (device == "PDF") {
         path <- normalizePath(path=paste(path, "/", sep=""), winslash="\\", mustWork=FALSE)
@@ -1384,8 +1370,10 @@ plot_surface <- function(cvobj,
         pdf(file=paste(path, file, sep=""), width=width, height=height, onefile=TRUE, paper=ifelse(test=horizontal, yes="USr", no="US"))
         cat("Device: ",  dev.cur(), "\n")
         surfaceplot(cvobj=cvobj, main=main, xlab=xlab, ylab=ylab,
-                    theta=theta, phi=phi, expand=expand, col.surf=col.surf,
-                    add.line=add.line, pch=pch, col=col, lty=lty, lwd=lwd, cex=cex)
+                    theta=theta, phi=phi, expand=expand, col=col,
+                    add.line=add.line,
+                    col.line=col.line, lty.line=lty.line, lwd.line=lwd.line, 
+                    pch.line=pch.line, cex.line=cex.line)
         dev.off()
       } else {
         stop("Currently allowed display devices are \"PS\" (Postscript) or \"PDF\" (Portable Document Format) \n")
@@ -1395,7 +1383,7 @@ plot_surface <- function(cvobj,
   } else {
 
     cat("Either the covariate pre-selection or the Survival Bump Hunting modeling failed for this dataset.\n
-        So, there is nothing to plot here.\n")
+        So no cross-validated tuning surface to plot here!\n")
 
   }
 }
@@ -1410,13 +1398,12 @@ plot_surface <- function(cvobj,
 ################
 #                    plot_boxtraj (object,
 #                                  main=NULL,
-#                                  xlab="Box Mass", ylab="Covariate Range",
 #                                  toplot=object$cvfit$cv.used,
 #                                  col.cov, lty.cov, lwd.cov,
-#                                  col=1, lty=1, lwd=1,
-#                                  cex=1, add.legend=FALSE, text.legend=NULL,
+#                                  col=1, lty=1, lwd=1, cex=1, 
+#                                  add.legend=FALSE, text.legend=NULL,
 #                                  nr=NULL, nc=NULL,
-#                                  device=NULL, file="Covariate Trajectory Plots", path=getwd())
+#                                  device=NULL, file="Trajectory Plots", path=getwd())
 #                                  horizontal=FALSE, width=8.5, height=8.5, ...)
 #
 ################
@@ -1435,13 +1422,12 @@ plot_surface <- function(cvobj,
 
 plot_boxtraj <- function(object,
                          main=NULL,
-                         xlab="Box Mass", ylab="Covariate Range",
                          toplot=object$cvfit$cv.used,
                          col.cov, lty.cov, lwd.cov,
-                         col=1, lty=1, lwd=1,
-                         cex=1, add.legend=FALSE, text.legend=NULL,
+                         col=1, lty=1, lwd=1, cex=1, 
+                         add.legend=FALSE, text.legend=NULL,
                          nr=NULL, nc=NULL,
-                         device=NULL, file="Covariate Trajectory Plots", path=getwd(),
+                         device=NULL, file="Trajectory Plots", path=getwd(),
                          horizontal=FALSE, width=8.5, height=11.5, ...) {
 
   if (!inherits(object, 'PRSP'))
@@ -1449,7 +1435,7 @@ plot_boxtraj <- function(object,
 
   if (object$plot) {
     boxtrajplot <- function(object,
-                            main, xlab, ylab,
+                            main,
                             toplot,
                             col.cov, lty.cov, lwd.cov,
                             col, lty, lwd,
@@ -1487,8 +1473,8 @@ plot_boxtraj <- function(object,
                  main=paste(varnames[toplot[j]], " covariate trajectory", sep=""), cex.main=cex,
                  xlim=range(0,1),
                  ylim=range(object$x[,toplot[j]], na.rm=TRUE),
-                 xlab=xlab,
-                 ylab=ylab, ...)
+                 xlab="Box Mass",
+                 ylab="Covariate Range", ...)
         }
         if (add.legend)
           legend("bottomleft", inset=0.01, legend=text.legend, cex=cex)
@@ -1499,7 +1485,7 @@ plot_boxtraj <- function(object,
              main="Box support trajectory", cex.main=cex,
              xlim=range(0,1),
              ylim=range(0,1),
-             xlab=xlab,
+             xlab="Box Mass",
              ylab=expression(paste("Support (", beta, ")", sep="")), ...)
         if (add.legend)
             legend("bottomright", inset=0.01, legend=text.legend, cex=cex)
@@ -1510,7 +1496,7 @@ plot_boxtraj <- function(object,
              main="MEFT trajectory", cex.main=cex,
              xlim=range(0,1),
              ylim=range(0, object$cvfit$cv.stats$mean$cv.max.time.bar, na.rm=TRUE),
-             xlab=xlab,
+             xlab="Box Mass",
              ylab="Time", ...)
         if (add.legend)
             legend("bottomright", inset=0.01, legend=text.legend, cex=cex)
@@ -1521,7 +1507,7 @@ plot_boxtraj <- function(object,
              main="MEFP trajectory", cex.main=cex,
              xlim=range(0,1),
              ylim=range(0,1),
-             xlab=xlab,
+             xlab="Box Mass",
              ylab="Probability", ...)
         if (add.legend)
             legend("bottomright", inset=0.01, legend=text.legend, cex=cex)
@@ -1532,7 +1518,7 @@ plot_boxtraj <- function(object,
              main="LHR trajectory", cex.main=cex,
              xlim=range(0,1),
              ylim=range(0, object$cvfit$cv.stats$mean$cv.lhr, na.rm=TRUE),
-             xlab=xlab,
+             xlab="Box Mass",
              ylab=expression(paste("Log-Hazard Ratio (", lambda,")", sep="")), ...)
         if (add.legend)
             legend("top", inset=0.01, legend=text.legend, cex=cex)
@@ -1543,7 +1529,7 @@ plot_boxtraj <- function(object,
              main="LRT trajectory", cex.main=cex,
              xlim=range(0,1),
              ylim=range(0, object$cvfit$cv.stats$mean$cv.lrt, na.rm=TRUE),
-             xlab=xlab,
+             xlab="Box Mass",
              ylab=expression(paste("Log-rank test (", chi^2 ,")", sep="")), ...)
         if (add.legend)
             legend("top", inset=0.01, legend=text.legend, cex=cex)
@@ -1554,7 +1540,7 @@ plot_boxtraj <- function(object,
              main="CER trajectory", cex.main=cex,
              xlim=range(0,1),
              ylim=range(0,1),
-             xlab=xlab,
+             xlab="Box Mass",
              ylab=expression(paste("1-C (", theta,")", sep="")), ...)
         if (add.legend)
             legend("top", inset=0.01, legend=text.legend, cex=cex)
@@ -1566,7 +1552,7 @@ plot_boxtraj <- function(object,
     if (is.null(device)) {
         cat("Device: ",  dev.cur(), "\n")
         boxtrajplot(object=object,
-                    main=main, xlab=xlab, ylab=ylab,
+                    main=main,
                     toplot=toplot,
                     col.cov=col.cov, lty.cov=lty.cov, lwd.cov=lwd.cov,
                     col=col, lty=lty, lwd=lwd,
@@ -1581,7 +1567,7 @@ plot_boxtraj <- function(object,
         postscript(file=paste(path, file, sep=""), width=width, height=height, onefile=TRUE, horizontal=horizontal)
         cat("Device: ",  dev.cur(), "\n")
         boxtrajplot(object=object,
-                    main=main, xlab=xlab, ylab=ylab,
+                    main=main,
                     toplot=toplot,
                     col.cov=col.cov, lty.cov=lty.cov, lwd.cov=lwd.cov,
                     col=col, lty=lty, lwd=lwd,
@@ -1597,7 +1583,7 @@ plot_boxtraj <- function(object,
         pdf(file=paste(path, file, sep=""), width=width, height=height, onefile=TRUE, paper=ifelse(test=horizontal, yes="USr", no="US"))
         cat("Device: ",  dev.cur(), "\n")
         boxtrajplot(object=object,
-                    main=main, xlab=xlab, ylab=ylab,
+                    main=main,
                     toplot=toplot,
                     col.cov=col.cov, lty.cov=lty.cov, lwd.cov=lwd.cov,
                     col=col, lty=lty, lwd=lwd,
@@ -1628,8 +1614,8 @@ plot_boxtraj <- function(object,
 #                                   toplot=object$cvfit$cv.used,
 #                                   center=TRUE, scale=FALSE,
 #                                   col.cov, lty.cov, lwd.cov,
-#                                   col=1, lty=1, lwd=1,
-#                                   cex=1, add.legend=FALSE, text.legend=NULL,
+#                                   col=1, lty=1, lwd=1, cex=1, 
+#                                   add.legend=FALSE, text.legend=NULL,
 #                                   device=NULL, file="Covariate Trace Plots", path=getwd(),
 #                                   horizontal=FALSE, width=8.5, height=8.5, ...)
 #
@@ -1652,8 +1638,8 @@ plot_boxtrace <- function(object,
                           toplot=object$cvfit$cv.used,
                           center=TRUE, scale=FALSE,
                           col.cov, lty.cov, lwd.cov,
-                          col=1, lty=1, lwd=1,
-                          cex=1, add.legend=FALSE, text.legend=NULL,
+                          col=1, lty=1, lwd=1, cex=1, 
+                          add.legend=FALSE, text.legend=NULL,
                           device=NULL, file="Covariate Trace Plots", path=getwd(),
                           horizontal=FALSE, width=8.5, height=8.5, ...) {
 

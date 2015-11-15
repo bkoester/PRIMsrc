@@ -363,20 +363,6 @@ cv.pval <- function(x, times, status,
                         verbose=conf$verbose)
     }
     clusterSetRNGStream(cl=cl, iseed=NULL)
-######################################################################################################
-clusterEvalQ(cl=cl, expr=library("survival"))
-clusterEvalQ(cl=cl, expr=library("Hmisc"))
-clusterExport(cl=cl,
-              varlist=list("cv.tune.rep",
-                           "cv.ave.box", "cv.comb.box",
-                           "cv.ave.fold", "cv.comb.fold",
-                           "cv.ave.peel", "cv.comb.peel",
-                           "cv.folds", "peel.box", "prsp",
-                           "updatecut", "endpoints",
-                           "is.empty", "cbindlist", "list2mat", "list2array",
-                           "lapply.mat", "lapply.array"),
-              envir=.GlobalEnv)
-######################################################################################################
     null.cl <- clusterCall(cl=cl, fun=cv.null,
                            x=x, times=times, status=status,
                            cvtype=cvtype, decimals=decimals,
@@ -637,12 +623,18 @@ cv.ave.tune <- function(x, times, status,
     rownames(CV.boxcut) <- paste("step", 0:(CV.Lm-1), sep="")
     colnames(CV.boxcut) <- colnames(x)
 
+    # Get the covariates directions of peeling from all folds
+    CV.sign <- sapply(X=sign.list, FUN=function(x, id){x[id]}, id=names(CV.sel), simplify=TRUE)
+    if (is.vector(CV.sign)) CV.sign <- matrix(data=CV.sign, nrow=1, ncol=K, dimnames=list(names(CV.sel),NULL))
+    CV.sign <- apply(X=CV.sign, MARGIN=1, FUN=function(x){as.numeric(names(which.max(table(x, useNA="no"))))})
+    names(CV.sign) <- names(CV.sel)
+
     # Get the box membership indicator vector of all observations for each step from all the folds
     # Based on the corresponding averaged box over the folds
     CV.boxind <- matrix(NA, nrow=CV.Lm, ncol=n)
     for (l in 1:CV.Lm) {
-        boxcut <- CV.boxcut[l, ] * varsign
-        x.cut <- t(t(x) * varsign)
+        boxcut <- CV.boxcut[l, ] * CV.sign
+        x.cut <- t(t(x) * CV.sign)
         x.ind <- t(t(x.cut) >= boxcut)
         CV.boxind[l,] <- (rowMeans(x.ind) == 1)  # Set as TRUE which observations are inside the box boudaries for all axes directions
     }
@@ -659,12 +651,6 @@ cv.ave.tune <- function(x, times, status,
     #w <- varfreq                         # least conservative (any covariate present in at least one of the folds)
     CV.sel <- as.numeric(names(w))
     names(CV.sel) <- colnames(x)[CV.sel]
-
-    # Get the covariates directions of peeling from all folds
-    CV.sign <- sapply(X=sign.list, FUN=function(x, id){x[id]}, id=names(CV.sel), simplify=TRUE)
-    if (is.vector(CV.sign)) CV.sign <- matrix(data=CV.sign, nrow=1, ncol=K, dimnames=list(names(CV.sel),NULL))
-    CV.sign <- apply(X=CV.sign, MARGIN=1, FUN=function(x){as.numeric(names(which.max(table(x, useNA="no"))))})
-    names(CV.sign) <- names(CV.sel)
 
     # Truncate the cross-validated quantities from all folds to the same cross-validated length
     for (k in 1:K) {
