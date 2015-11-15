@@ -76,16 +76,11 @@
 #===================================================
 library("PRIMsrc")
 
-<<<<<<< HEAD
 #===================================================
-=======
-#=================================================================================
->>>>>>> refs/remotes/origin/master
 # Simulated dataset #1 (n=250, p=3)
 # Non Replicated Combined Cross-Validation (RCCV)
 # Peeling criterion = LRT
 # Optimization criterion = LRT
-<<<<<<< HEAD
 # Without parallelization
 # Without computation of permutation p-values
 #===================================================
@@ -107,20 +102,4 @@ CVCOMB.SBH <- sbh(cvobj = CVCOMB.CV,
                   parallel = FALSE, conf = NULL, seed = 123)
 
 print(CVCOMB.SBH)
-=======
-#=================================================================================
-CVCOMB.synt1 <- sbh(dataset = Synthetic.1, 
-                    cvtype = "combined", cvcriterion = "lrt",
-                    B = 1, K = 5, 
-                    vs = TRUE, cpv = FALSE, 
-                    decimals = 2, probval = 0.5, 
-                    arg = "beta=0.05,
-                           alpha=0.1,
-                           minn=10,
-                           L=NULL,
-                           peelcriterion=\"lr\"",
-                    parallel = FALSE, conf = NULL, seed = 123)
-
-print(CVCOMB.synt1)
->>>>>>> refs/remotes/origin/master
 }

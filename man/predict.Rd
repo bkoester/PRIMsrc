@@ -96,16 +96,11 @@
 #===================================================
 library("PRIMsrc")
 
-<<<<<<< HEAD
 #===================================================
-=======
-#=================================================================================
->>>>>>> refs/remotes/origin/master
 # Simulated dataset #1 (n=250, p=3)
 # Non Replicated Combined Cross-Validation (RCCV)
 # Peeling criterion = LRT
 # Optimization criterion = LRT
-<<<<<<< HEAD
 # Without parallelization
 # Without computation of permutation p-values
 #===================================================
@@ -134,27 +129,4 @@ x <- matrix(data=runif(n=n*p, min=0, max=1),
 CVCOMB.PRED <- predict(object=CVCOMB.SBH,
                        newdata=x, 
                        steps=CVCOMB.SBH$cvfit$cv.nsteps)
-=======
-#=================================================================================
-CVCOMB.synt1 <- sbh(dataset = Synthetic.1, 
-                    cvtype = "combined", cvcriterion = "lrt",
-                    B = 1, K = 5, 
-                    vs = TRUE, cpv = FALSE, 
-                    decimals = 2, probval = 0.5, 
-                    arg = "beta=0.05,
-                           alpha=0.1,
-                           minn=10,
-                           L=NULL,
-                           peelcriterion=\"lr\"",
-                    parallel = FALSE, conf = NULL, seed = 123)
-
-n <- 100
-p <- length(CVCOMB.synt1$cvfit$cv.used)
-x <- matrix(data=runif(n=n*p, min=0, max=1),
-            nrow=n, ncol=p, byrow=FALSE,
-            dimnames=list(1:n, paste("X", 1:p, sep="")))
-CVCOMB.pred <- predict(object=CVCOMB.synt1,
-                       newdata=x,
-                       steps=CVCOMB.synt1$cvfit$cv.nsteps)
->>>>>>> refs/remotes/origin/master
 }
