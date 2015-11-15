@@ -1148,6 +1148,7 @@ plot_profile <- function(cvobj,
         se.profile <- cvobj$cvfit$cv.profile$se
         if (cvobj$cvcriterion == "lhr") {
           txt <- "LHR"
+<<<<<<< HEAD
           optisteps <- apply(X=mu.profile, MARGIN=1, which.max)
         } else if (cvobj$cvcriterion == "lrt") {
           txt <- "LRT"
@@ -1155,6 +1156,15 @@ plot_profile <- function(cvobj,
         } else if (cvobj$cvcriterion == "cer") {
           txt <- "CER"
           optisteps <- apply(X=mu.profile, MARGIN=1, which.min)
+=======
+          profiles <- object$cvprofiles$lhr
+        } else if (object$cvcriterion == "lrt") {
+          txt <- "LRT"
+          profiles <- object$cvprofiles$lrt
+        } else if (object$cvcriterion == "cer") {
+          txt <- "CER"
+          profiles <- object$cvprofiles$cer
+>>>>>>> refs/remotes/origin/master
         } else {
           stop("Invalid CV criterion.\n")
         }
@@ -1300,6 +1310,7 @@ plot_surface <- function(cvobj,
         } else if (is.null(cvobj$fdr)) {
             models <- cvobj$thr
         }
+<<<<<<< HEAD
         M <- length(models)
         optima <- numeric(M)
         optisteps <- numeric(M)
@@ -1326,6 +1337,17 @@ plot_surface <- function(cvobj,
           }
         } else {
           stop("Invalid CV criterion.\n")
+=======
+        Lm <- object$cvfit$cv.maxsteps
+        mean.profile <- apply(profiles, 2, mean, na.rm=TRUE)
+        se.profile <- apply(profiles, 2, sd, na.rm=TRUE)
+        ylim <- range(0, 1, profiles, na.rm=TRUE)
+        if (add.profiles) {
+          matplot(t(profiles), axes=FALSE, type="b",
+                  xlab="", ylab="", main="", ylim=ylim,
+                  pch=pch, lty=1, lwd=lwd/4, cex=cex/4, ...)
+          par(new=TRUE)
+>>>>>>> refs/remotes/origin/master
         }
         res <- persp(x=models, y=steps, z=mu.profile,
                      xlab=xlab, ylab=ylab, zlab=txt, main=main,

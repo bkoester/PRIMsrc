@@ -157,6 +157,7 @@ library("PRIMsrc")
 # Non Replicated Combined Cross-Validation (RCCV)
 # Peeling criterion = LRT
 # Optimization criterion = LRT
+<<<<<<< HEAD
 # Without parallelization
 #===================================================
 CVCOMB.CV <- cv.sbh(dataset = Synthetic.1,
@@ -173,6 +174,23 @@ CVCOMB.CV <- cv.sbh(dataset = Synthetic.1,
 
 plot_profile(cvobj = CVCOMB.CV, 
              main = paste("Cross-validated tuning profile for model #1", sep=""),
+=======
+#=================================================================================
+CVCOMB.synt1 <- sbh(dataset = Synthetic.1, 
+                    cvtype = "combined", cvcriterion = "lrt",
+                    B = 1, K = 5, 
+                    vs = TRUE, cpv = FALSE, 
+                    decimals = 2, probval = 0.5, 
+                    arg = "beta=0.05,
+                           alpha=0.1,
+                           minn=10,
+                           L=NULL,
+                           peelcriterion=\"lr\"",
+                    parallel = FALSE, conf = NULL, seed = 123)
+
+plot_profile(object = CVCOMB.synt1, 
+             main = "Cross-validated tuning profiles for model #1",
+>>>>>>> refs/remotes/origin/master
              xlab = "Peeling Steps", ylab = "Mean Profiles",
              pch = 20, col = "black", lty = 1, lwd = 2, cex = 2,
              add.sd = TRUE, add.profiles = TRUE,

@@ -145,8 +145,18 @@
             \item{cv.boxind}: \code{logical} \code{matrix} in {\code{TRUE}, \code{FALSE}} of individual observation box membership indicator (columns) for all peeling steps (rows).
             \item{cv.rules}: \code{data.frame} of decision rules on the covariates (columns) for all peeling steps (rows).
             \item{cv.stats}: \code{numeric} \code{matrix} of box endpoint quantities of interest (columns) for all peeling steps (rows).
+<<<<<<< HEAD
             \item{cv.pval}: \code{numeric} \code{vector} of log-rank permutation p-values of sepraration of survival distributions.}
         }
+=======
+            \item{cv.pval}: \code{numeric} \code{vector} of log-rank permutation p-values of sepraration of survival distributions.
+            }
+    }
+    \item{cvprofiles}{\code{List} of (\eqn{B}) of \code{numeric} \code{vectors}, one for each replicate, 
+        of the cross-validated statistics used in the optimization criterion (set by user) as a function of the number of peeling steps.}
+    \item{cvmeanprofiles}{\code{List} of \code{numeric} \code{vectors} of the cross-validated mean statistics over the replicates.
+        used in the optimization criterion (one set by user) as a function of the number of peeling steps.}
+>>>>>>> refs/remotes/origin/master
     \item{plot}{\code{logical} scalar of the returned flag for plotting or not the results of the fitted SBH model.}
     \item{config}{\code{List} with 7 fields of parameters used for configuring the parallelization including \code{parallel} and \code{conf}.}
     \item{seed}{User seed(s) used:
@@ -234,6 +244,7 @@ data("Synthetic.1", package="PRIMsrc")
 # Without parallelization
 # Without computation of permutation p-values
 #===================================================
+<<<<<<< HEAD
 CVCOMB.CV <- cv.sbh(dataset = Synthetic.1,
                     B = 1, K = 5,
                     cvtype = "combined",
@@ -250,6 +261,19 @@ CVCOMB.SBH <- sbh(cvobj = CVCOMB.CV,
                   cpv = FALSE, decimals = 2,
                   probval = 0.5, timeval = NULL,
                   parallel = FALSE, conf = NULL, seed = 123)
+=======
+CVCOMB.synt1 <- sbh(dataset = Synthetic.1, 
+                    cvtype = "combined", cvcriterion = "lrt",
+                    B = 1, K = 5, 
+                    vs = TRUE, cpv = FALSE, 
+                    decimals = 2, probval = 0.5, 
+                    arg = "beta=0.05,
+                           alpha=0.05,
+                           minn=5,
+                           L=NULL,
+                           peelcriterion=\"lr\"",
+                    parallel = FALSE, conf = NULL, seed = 123)
+>>>>>>> refs/remotes/origin/master
 
 \dontrun{
     #===================================================
@@ -326,10 +350,13 @@ CVCOMB.SBH <- sbh(cvobj = CVCOMB.CV,
                                   peelcriterion=\"lr\"",
                            fdr = NULL, thr = NULL,
                            parallel = TRUE, conf = conf, seed = 123)
+<<<<<<< HEAD
 
     CVCOMBREP.SBH <- sbh(cvobj = CVCOMBREP.CV, 
                          A = 1000, cpv = TRUE, decimals = 2, 
                          probval = 0.5, timeval = NULL,
                          parallel = TRUE, conf = conf, seed = 123)
+=======
+>>>>>>> refs/remotes/origin/master
 }
 }

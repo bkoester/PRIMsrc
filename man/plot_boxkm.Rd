@@ -167,6 +167,7 @@ library("PRIMsrc")
 # Non Replicated Combined Cross-Validation (RCCV)
 # Peeling criterion = LRT
 # Optimization criterion = LRT
+<<<<<<< HEAD
 # Without parallelization
 # Without computation of permutation p-values
 #===================================================
@@ -192,4 +193,24 @@ plot_boxkm(object = CVCOMB.SBH,
            xlab = "Time", ylab="Probability",
            steps=1:CVCOMB.SBH$cvfit$cv.nsteps,
            device = NULL)
+=======
+#=================================================================================
+CVCOMB.synt1 <- sbh(dataset = Synthetic.1, 
+                    cvtype = "combined", cvcriterion = "lrt",
+                    B = 1, K = 5, 
+                    vs = TRUE, cpv = FALSE, 
+                    decimals = 2, probval = 0.5, 
+                    arg = "beta=0.05,
+                           alpha=0.1,
+                           minn=10,
+                           L=NULL,
+                           peelcriterion=\"lr\"",
+                    parallel = FALSE, conf = NULL, seed = 123)
+
+plot_boxkm(object = CVCOMB.synt1,
+           main = paste("Cross-validated probability curves for model #1", sep=""),
+           xlab = "Time", ylab = "Probability",
+           device = NULL, file = "Survival Plots", path=getwd(),
+           horizontal = TRUE, width = 11.5, height = 8.5)
+>>>>>>> refs/remotes/origin/master
 }

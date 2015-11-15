@@ -177,6 +177,7 @@ library("PRIMsrc")
 # Non Replicated Combined Cross-Validation (RCCV)
 # Peeling criterion = LRT
 # Optimization criterion = LRT
+<<<<<<< HEAD
 # Without parallelization
 # Without computation of permutation p-values
 #===================================================
@@ -201,4 +202,24 @@ plot_boxtraj(object = CVCOMB.SBH,
              main = paste("Cross-validated peeling trajectories for model #1", sep=""),
              toplot = CVCOMB.SBH$cvfit$cv.used,
              device = NULL)
+=======
+#=================================================================================
+CVCOMB.synt1 <- sbh(dataset = Synthetic.1, 
+                    cvtype = "combined", cvcriterion = "lrt",
+                    B = 1, K = 5, 
+                    vs = TRUE, cpv = FALSE, 
+                    decimals = 2, probval = 0.5, 
+                    arg = "beta=0.05,
+                           alpha=0.1,
+                           minn=10,
+                           L=NULL,
+                           peelcriterion=\"lr\"",
+                    parallel = FALSE, conf = NULL, seed = 123)
+
+plot_boxtraj(object = CVCOMB.synt1,
+             main = paste("Cross-validated peeling trajectories for model #1", sep=""),
+             toplot = CVCOMB.synt1$cvfit$cv.used,
+             device = NULL, file = "Trajectory Plots", path=getwd(),
+             horizontal = FALSE, width = 8.5, height = 8.5)
+>>>>>>> refs/remotes/origin/master
 }
