@@ -71,28 +71,35 @@
 \keyword{Rule-Induction Method}
 
 \examples{
-    #===================================================
-    # Loading the library and its dependencies
-    #===================================================
-    library("PRIMsrc")
+#===================================================
+# Loading the library and its dependencies
+#===================================================
+library("PRIMsrc")
 
-    #=================================================================================
-    # Simulated dataset #1 (n=250, p=3)
-    # Replicated Combined Cross-Validation (RCCV)
-    # Peeling criterion = LRT
-    # Optimization criterion = LRT
-    #=================================================================================
-    CVCOMBREP.synt1 <- sbh(dataset = Synthetic.1, 
-                           cvtype = "combined", cvcriterion = "lrt",
-                           B = 1, K = 5, 
-                           vs = TRUE, cpv = FALSE, 
-                           decimals = 2, probval = 0.5, 
-                           arg = "beta=0.05,
-                                  alpha=0.1,
-                                  minn=10,
-                                  L=NULL,
-                                  peelcriterion=\"lr\"",
-                           parallel = FALSE, conf = NULL, seed = 123)
+#===================================================
+# Simulated dataset #1 (n=250, p=3)
+# Non Replicated Combined Cross-Validation (RCCV)
+# Peeling criterion = LRT
+# Optimization criterion = LRT
+# Without parallelization
+# Without computation of permutation p-values
+#===================================================
+CVCOMB.CV <- cv.sbh(dataset = Synthetic.1,
+                    B = 1, K = 5,
+                    cvtype = "combined",
+                    cvcriterion = "lrt",
+                    conservative = "least",
+                    arg = "beta=0.05,
+                           alpha=0.05,
+                           minn=5,
+                           peelcriterion=\"lr\"",
+                    fdr = NULL, thr = NULL,
+                    parallel = FALSE, conf = NULL, seed = 123)
 
-    print(CVCOMBREP.synt1)
+CVCOMB.SBH <- sbh(cvobj = CVCOMB.CV,
+                  cpv = FALSE, decimals = 2,
+                  probval = 0.5, timeval = NULL,
+                  parallel = FALSE, conf = NULL, seed = 123)
+
+print(CVCOMB.SBH)
 }

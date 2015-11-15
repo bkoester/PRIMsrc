@@ -162,7 +162,8 @@
                     the number of pre-selected variales and the number of peeling steps.  
                   - a \code{matrix} of pointwise mean values of the above array over the cross-validation replicates.
                   - a \code{matrix} of pointwise standard error values of the above array over the cross-validation replicates.}
-        }
+            }
+    }
     \item{success}{\code{logical} scalar of the returned flag for pursuing or not a SBH model fitting by the \code{sbh} function.}
     \item{seed}{User seed(s) used:
         \code{integer} of a single value, if parallelization is used
@@ -243,23 +244,22 @@ data("Synthetic.1", package="PRIMsrc")
 
 #===================================================
 # Simulated dataset #1 (n=250, p=3)
-# Replicated Combined Cross-Validation (RCCV)
+# Non Replicated Combined Cross-Validation (RCCV)
 # Peeling criterion = LRT
 # Optimization criterion = LRT
 # Without parallelization
-# Without computation of permutation p-values
 #===================================================
-CVCOMBREP.CV <- cv.sbh(dataset = Synthetic.1, 
-                       B = 1, K = 5, 
-                       cvtype = "combined", 
-                       cvcriterion = "lrt",
-                       conservative = "least",
-                       arg = "beta=0.05,
-                              alpha=0.05,
-                              minn=5,
-                              peelcriterion=\"lr\"",
-                       fdr = NULL, thr = NULL,
-                       parallel = FALSE, conf = NULL, seed = 123)
+CVCOMB.CV <- cv.sbh(dataset = Synthetic.1,
+                    B = 1, K = 5,
+                    cvtype = "combined",
+                    cvcriterion = "lrt",
+                    conservative = "least",
+                    arg = "beta=0.05,
+                           alpha=0.05,
+                           minn=5,
+                           peelcriterion=\"lr\"",
+                    fdr = NULL, thr = NULL,
+                    parallel = FALSE, conf = NULL, seed = 123)
 
 \dontrun{
     #===================================================
@@ -317,26 +317,23 @@ CVCOMBREP.CV <- cv.sbh(dataset = Synthetic.1,
                      "verbose" = TRUE,
                      "outfile" = "")
     }
-    
     #===================================================
     # Simulated dataset #1 (n=250, p=3)
     # Replicated Combined Cross-Validation (RCCV)
     # Peeling criterion = LRT
     # Optimization criterion = LRT
     # With parallelization
-    # With computation of permutation p-values
     #===================================================
-    CVCOMBREP.CV <- cv.sbh(dataset = Synthetic.1, 
-                       B = 1, K = 5, 
-                       cvtype = "combined", 
-                       cvcriterion = "lrt",
-                       conservative = "least",
-                       arg = "beta=0.05,
-                              alpha=0.05,
-                              minn=5,
-                              peelcriterion=\"lr\"",
-                       fdr = NULL, thr = NULL,
-                       parallel = TRUE, conf = conf, seed = 123)
-
+    CVCOMBREP.CV <- cv.sbh(dataset = Synthetic.1,
+                           B = 10, K = 5,
+                           cvtype = "combined",
+                           cvcriterion = "lrt",
+                           conservative = "least",
+                           arg = "beta=0.05,
+                                  alpha=0.05,
+                                  minn=5,
+                                  peelcriterion=\"lr\"",
+                           fdr = NULL, thr = NULL,
+                           parallel = TRUE, conf = conf, seed = 123)
 }
 }

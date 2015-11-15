@@ -220,18 +220,116 @@ PRIMsrc.news()
 citation("PRIMsrc")
 
 #===================================================
+# Demo with a synthetic dataset
+# Use help for descriptions
+#===================================================
+data("Synthetic.1", package="PRIMsrc")
+?Synthetic.1
+
+#===================================================
 # Simulated dataset #1 (n=250, p=3)
-# Replicated Combined Cross-Validation (RCCV)
+# Non Replicated Combined Cross-Validation (RCCV)
 # Peeling criterion = LRT
 # Optimization criterion = LRT
 # Without parallelization
 # Without computation of permutation p-values
 #===================================================
-CVCOMBREP.synt1 <- sbh(cvobj = CVCOMBREP.CV, 
-                       A = 1000, cpv = FALSE, 
-                       decimals = 2, probval = 0.5,
-                       parallel = FALSE, conf = NULL, seed = 123)
+CVCOMB.CV <- cv.sbh(dataset = Synthetic.1,
+                    B = 1, K = 5,
+                    cvtype = "combined",
+                    cvcriterion = "lrt",
+                    conservative = "least",
+                    arg = "beta=0.05,
+                           alpha=0.05,
+                           minn=5,
+                           peelcriterion=\"lr\"",
+                    fdr = NULL, thr = NULL,
+                    parallel = FALSE, conf = NULL, seed = 123)
 
-summary(CVCOMBREP.synt1)
-print(CVCOMBREP.synt1)
+CVCOMB.SBH <- sbh(cvobj = CVCOMB.CV,
+                  cpv = FALSE, decimals = 2,
+                  probval = 0.5, timeval = NULL,
+                  parallel = FALSE, conf = NULL, seed = 123)
+
+\dontrun{
+    #===================================================
+    # Examples of parallel backend parametrization 
+    #===================================================
+    # Example #1 - 1-Quad (4-core double threaded) PC 
+    # Running WINDOWS
+    # With SOCKET communication
+    #===================================================
+    if (.Platform$OS.type == "windows") {
+        cpus <- detectCores()
+        conf <- list("names" = rep("localhost", cpus),
+                     "cpus" = cpus,
+                     "type" = "SOCK",
+                     "homo" = TRUE,
+                     "verbose" = TRUE,
+                     "outfile" = "")
+    }
+    #===================================================
+    # Example #2 - 1 master node + 3 worker nodes cluster
+    # All nodes equipped with identical setups and multicores
+    # Running LINUX
+    # With SOCKET communication
+    #===================================================
+    if (.Platform$OS.type == "unix") {
+        masterhost <- Sys.getenv("HOSTNAME")
+        slavehosts <- c("compute-0-0", "compute-0-1", "compute-0-2")
+        nodes <- length(slavehosts) + 1
+        cpus <- 8
+        conf <- list("names" = c(rep(masterhost, cpus),
+                                 rep(slavehosts, cpus)),
+                     "cpus" = nodes * cpus,
+                     "type" = "SOCK",
+                     "homo" = TRUE,
+                     "verbose" = TRUE,
+                     "outfile" = "")
+    }
+    #===================================================
+    # Example #3 - Multinode multicore per node cluster
+    # Running LINUX 
+    # with MPI communication
+    # Here, a file named ".nodes" (e.g. in the home directory)
+    # contains the list of nodes of the cluster
+    #===================================================
+    if (.Platform$OS.type == "unix") {
+        hosts <- scan(file=paste(Sys.getenv("HOME"), "/.nodes", sep=""), 
+                      what="", 
+                      sep="\n")
+        hostnames <- unique(hosts)
+        nodes <- length(hostnames)
+        cpus <-  length(hosts)/length(hostnames)
+        conf <- list("cpus" = nodes * cpus,
+                     "type" = "MPI",
+                     "homo" = TRUE,
+                     "verbose" = TRUE,
+                     "outfile" = "")
+    }
+    #===================================================
+    # Simulated dataset #1 (n=250, p=3)
+    # Replicated Combined Cross-Validation (RCCV)
+    # Peeling criterion = LRT
+    # Optimization criterion = LRT
+    # With parallelization
+    # With computation of permutation p-values
+    #===================================================
+    CVCOMBREP.CV <- cv.sbh(dataset = Synthetic.1,
+                           B = 10, K = 5,
+                           cvtype = "combined",
+                           cvcriterion = "lrt",
+                           conservative = "least",
+                           arg = "beta=0.05,
+                                  alpha=0.05,
+                                  minn=5,
+                                  peelcriterion=\"lr\"",
+                           fdr = NULL, thr = NULL,
+                           parallel = TRUE, conf = conf, seed = 123)
+
+    CVCOMBREP.SBH <- sbh(cvobj = CVCOMBREP.CV, 
+                         A = 1000, cpv = TRUE, decimals = 2, 
+                         probval = 0.5, timeval = NULL,
+                         parallel = TRUE, conf = conf, seed = 123)
+}
 }

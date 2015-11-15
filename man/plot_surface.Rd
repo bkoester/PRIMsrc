@@ -20,13 +20,13 @@
                theta = 5, 
                phi = 10, 
                expand = 0.2, 
+               col = "lightblue",
                add.line = FALSE, 
-               col = "yellow",
-               col.surf = "lightblue",
-               pch = 20, 
-               lty = 1, 
-               lwd = 1, 
-               cex = 1,
+               col.line = "yellow",
+               lty.line = 1, 
+               lwd.line = 1, 
+               pch.line = 20, 
+               cex.line = 1,
                device = NULL, 
                file = "Surface Plot", 
                path=getwd(), 
@@ -48,41 +48,53 @@
   \item{ylab}{
     \code{Character} \code{vector}. Y axis label. Defaults to "Peeling Steps".
   }
-  \item{add.line}{
-    \code{Logical} scalar. Shall the optimal path be plotted on the surface? Defaults to \code{FALSE}.
-  }
-  \item{col}{
-    \code{Integer} scalar of line color of the optimal path. Defaults to "yellow".
-  }
-  \item{col.surf}{
-    \code{Integer} scalar of color of the surface profile. Defaults to "lightblue".
-  }
   \item{theta}{
     \code{Integer} scalar of angle defining the viewing direction of the perspective plot. 
-    theta gives the azimuthal direction. Defaults to 5.
+    Defaults to 5.
+    \code{theta} gives the azimuthal direction.
     See base function \code{persp} from R package \pkg{graphics}.
   }
   \item{phi}{
     \code{Integer} scalar of angle defining the viewing direction of the perspective plot. 
-    phi the colatitude. Defaults to 10.
+    Defaults to 10.
+    \code{phi} gives the colatitude.
     See base function \code{persp} from R package \pkg{graphics}.
   }
   \item{expand}{
     \code{Integer} scalar of a expansion factor applied to the z coordinates. 
-    Often used with 0 < expand < 1 to shrink the plotting box in the z direction. Defaults to 0.2.
+    Defaults to 0.2.
+    Often used with 0 < expand < 1 to shrink the plotting box in the z direction. 
     See base function \code{persp} from R package \pkg{graphics}.
   }
-  \item{pch}{
-    \code{Integer} scalar of symbol number for all the profiles. Defaults to 20.
+  \item{col}{
+    \code{Integer} scalar of color of the surface facets of the mean profiles. 
+    Defaults to "lightblue".	
+    Transparent colours are ignored.
+    See base function \code{persp} from R package \pkg{graphics}.
   }
-  \item{lty}{
-    \code{Integer} scalar of line type of the mean profile. Defaults to 1.
+  \item{add.line}{
+    \code{Logical} scalar. Shall the optimal path line be plotted on the surface? 
+    Defaults to \code{FALSE}.
   }
-  \item{lwd}{
-    \code{Integer} scalar of line width of the mean profile. Defaults to 1.
+  \item{col.line}{
+    \code{Integer} scalar of line color of the optimal path line. 
+    Defaults to "yellow".
   }
-  \item{cex}{
-    \code{Integer} scalar of symbol expansion for all the profiles. Defaults to 1.
+  \item{lty.line}{
+    \code{Integer} scalar of line type of the optimal path line. 
+    Defaults to 1.
+  }
+  \item{lwd.line}{
+    \code{Integer} scalar of line width of the optimal path line. 
+    Defaults to 1.
+  }
+  \item{pch.line}{
+    \code{Integer} scalar of symbol number of the points on the optimal path line. 
+    Defaults to 20.
+  }
+  \item{cex.line}{
+    \code{Integer} scalar of symbol expansion of the points on the optimal path line. 
+    Defaults to 1.
   }
   \item{device}{
     Graphic display device in \{NULL, "PS", "PDF"\}. Defaults to NULL (standard output screen).
@@ -170,18 +182,31 @@
 #===================================================
 library("PRIMsrc")
 
-#=================================================================================
+#===================================================
 # Simulated dataset #1 (n=250, p=3)
-# Replicated Combined Cross-Validation (RCCV)
+# Non Replicated Combined Cross-Validation (RCCV)
 # Peeling criterion = LRT
 # Optimization criterion = LRT
-#=================================================================================
-plot_surface(cvobj = CVCOMBREP.CV, 
-             main = "RCCV tuning profiles for model #1",
+# Without parallelization
+#===================================================
+CVCOMB.CV <- cv.sbh(dataset = Synthetic.1,
+                    B = 1, K = 5,
+                    cvtype = "combined",
+                    cvcriterion = "lrt",
+                    conservative = "least",
+                    arg = "beta=0.05,
+                           alpha=0.05,
+                           minn=5,
+                           peelcriterion=\"lr\"",
+                    fdr = NULL, thr = NULL,
+                    parallel = FALSE, conf = NULL, seed = 123)
+
+plot_surface(cvobj = CVCOMB.CV, 
+             main = paste("Cross-validated tuning surface for model #1", sep=""),
              xlab = "Model Size (# variables)", ylab = "Peeling Steps",
-             add.line = TRUE, col = "yellow",
-             theta = 5, phi = 10, expand = 0.2,
-             col.surf = "lightblue", pch=20, col="black", lty=1, lwd=1, cex=1,
-             device = NULL, file = "Surface Plot", path=getwd(),
-             horizontal = FALSE, width = 8.5, height = 5.0)
+             theta = 5, phi = 10, expand = 0.2, col = "lightblue", 
+             add.line = TRUE,
+             col.line = "yellow", lty.line = 1, lwd.line = 1, 
+             pch.line = 20, cex.line = 1,
+             device = NULL)
 }
