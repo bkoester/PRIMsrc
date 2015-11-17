@@ -276,3 +276,5 @@ DESCRIPTION
 inst/doc/PRIMsrc_0.6.3.pdf
 man/plot_boxkm.Rd
 man/plot_boxtraj.Rd
+man/cv.sbh.Rd
+*.Rd
