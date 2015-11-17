@@ -31,7 +31,7 @@
                path=getwd(), 
                horizontal = FALSE, 
                width = 8.5, 
-               height = 11.5, ...)
+               height = 11, ...)
 }
 
 \arguments{
@@ -104,7 +104,7 @@
     \code{Numeric} scalar. Width of the graphics region in inches. Defaults to 8.5.
   }
   \item{height}{
-    \code{Numeric} scalar. Height of the graphics region in inches. Defaults to 8.5.
+    \code{Numeric} scalar. Height of the graphics region in inches. Defaults to 11.
   }
   \item{\dots}{
     Generic arguments passed to other plotting functions.
@@ -199,6 +199,12 @@ CVCOMB.SBH <- sbh(cvobj = CVCOMB.CV,
 
 plot_boxtraj(object = CVCOMB.SBH,
              main = paste("Cross-validated peeling trajectories for model #1", sep=""),
+<<<<<<< HEAD
              toplot = CVCOMB.SBH$cvfit$cv.used,
              device = NULL)
+=======
+             toplot = CVCOMB.synt1$cvfit$cv.used,
+             device = NULL, file = "Trajectory Plots", path=getwd(),
+             horizontal = FALSE, width = 8.5, height = 11)
+>>>>>>> refs/remotes/origin/master
 }

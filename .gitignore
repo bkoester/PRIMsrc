@@ -267,3 +267,12 @@ DESCRIPTION
 *.pdf
 *.Rd
 R/PRIMsrc.r
+inst/doc/PRIMsrc_0.6.3.pdf
+DESCRIPTION
+man/plot_boxkm.Rd
+man/plot_boxtraj.Rd
+DESCRIPTION
+DESCRIPTION
+inst/doc/PRIMsrc_0.6.3.pdf
+man/plot_boxkm.Rd
+man/plot_boxtraj.Rd
