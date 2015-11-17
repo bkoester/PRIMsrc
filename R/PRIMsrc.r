@@ -1095,7 +1095,7 @@ predict.PRSP <- function (object,
 #                                 add.sd=TRUE, add.profiles=TRUE,
 #                                 pch=20, col=1, lty=1, lwd=2, cex=2,
 #                                 device=NULL, file="Profile Plot", path=getwd(),
-#                                 horizontal=FALSE, width=8.5, height=11.5, ...)
+#                                 horizontal=FALSE, width=8.5, height=11, ...)
 #
 ################
 # Description   :
@@ -1117,7 +1117,7 @@ plot_profile <- function(cvobj,
                          add.sd=TRUE, add.profiles=TRUE,
                          pch=20, col=1, lty=1, lwd=2, cex=2,
                          device=NULL, file="Profile Plot", path=getwd(),
-                         horizontal=FALSE, width=8.5, height=11.5, ...) {
+                         horizontal=FALSE, width=8.5, height=11, ...) {
 
   if (!inherits(cvobj, 'CV'))
         stop("Primary argument much be a CV object")
@@ -1404,7 +1404,7 @@ plot_surface <- function(cvobj,
 #                                  add.legend=FALSE, text.legend=NULL,
 #                                  nr=NULL, nc=NULL,
 #                                  device=NULL, file="Trajectory Plots", path=getwd())
-#                                  horizontal=FALSE, width=8.5, height=8.5, ...)
+#                                  horizontal=FALSE, width=8.5, height=11, ...)
 #
 ################
 # Description   :
@@ -1428,7 +1428,7 @@ plot_boxtraj <- function(object,
                          add.legend=FALSE, text.legend=NULL,
                          nr=NULL, nc=NULL,
                          device=NULL, file="Trajectory Plots", path=getwd(),
-                         horizontal=FALSE, width=8.5, height=11.5, ...) {
+                         horizontal=FALSE, width=8.5, height=11, ...) {
 
   if (!inherits(object, 'PRSP'))
         stop("Primary argument much be an object of class 'PRSP' \n")
@@ -1782,7 +1782,7 @@ plot_boxtrace <- function(object,
 #                                steps=1:object$cvfit$cv.nsteps,
 #                                nr=3, nc=4,
 #                                device=NULL, file="Survival Plots", path=getwd(),
-#                                horizontal=TRUE, width=11.5, height=8.5, ...)
+#                                horizontal=TRUE, width=11, height=8.5, ...)
 #
 ################
 # Description   :
@@ -1805,7 +1805,7 @@ plot_boxkm <- function(object,
                        steps=1:object$cvfit$cv.nsteps,
                        nr=3, nc=4,
                        device=NULL, file="Survival Plots", path=getwd(),
-                       horizontal=TRUE, width=11.5, height=8.5, ...) {
+                       horizontal=TRUE, width=11, height=8.5, ...) {
 
   if (!inherits(object, 'PRSP'))
         stop("Primary argument much be an object of class 'PRSP' \n")
