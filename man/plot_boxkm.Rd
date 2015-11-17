@@ -189,13 +189,7 @@ CVCOMB.SBH <- sbh(cvobj = CVCOMB.CV,
 
 plot_boxkm(object = CVCOMB.SBH,
            main = paste("Cross-validated probability curves for model #1", sep=""),
-<<<<<<< HEAD
            xlab = "Time", ylab="Probability",
            steps=1:CVCOMB.SBH$cvfit$cv.nsteps,
            device = NULL)
-=======
-           xlab = "Time", ylab = "Probability",
-           device = NULL, file = "Survival Plots", path=getwd(),
-           horizontal = TRUE, width = 11, height = 8.5)
->>>>>>> refs/remotes/origin/master
 }
