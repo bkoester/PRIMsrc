@@ -11,18 +11,18 @@
   and clinical variables to characterize the molecular distinctions between squamous cell carcinoma (SCC) and adenocarcinoma (AC)
   in Non Small Cell Lung Cancer (NSCLC) aside large cell lung carcinoma (LCC). Tissue samples were analysed from a cohort of 
   123 patients who underwent complete surgical resection at the Institut Mutualiste Montsouris (Paris, France) between 
-  30 January 2002 and 26 June 2006. In this genomic dataset, the expression levels of Agilent miRNA probes (\eqn{p=939}) 
-  were included from the \eqn{n=123} samples of the Chemores cohort. The data contains normalized expression levels. 
-  See below the paper by Lazar et al. (2013) and Array Express data repository for complete description of the samples, tissue preparation, 
-  Agilent array technology, data normalization, etc. This dataset represents a situation where the number of covariates dominates 
-  the number of complete observations, or \eqn{p >> n} case. 
+  30 January 2002 and 26 June 2006. In this genomic dataset, \eqn{p=5} clinical variables ("Age", "Type", "KRAS.status", "EGFR.status", "P53.status") 
+  were added to the expression levels of \eqn{p=939} Agilent miRNA probes from the \eqn{n=123} samples of the Chemores cohort. 
+  The data contains normalized expression levels. See below the paper by Lazar et al. (2013) and Array Express data repository 
+  for complete description of the samples, tissue preparation, Agilent array technology, data normalization, etc. 
+  This dataset represents a situation where the number of covariates dominates the number of complete observations, or \eqn{p >> n} case. 
 }
 
 \usage{Real.2}
 
 \format{
   Dataset consists of a \code{numeric} \code{data.frame} containing \eqn{n=123} complete observations (samples) 
-  by rows and \eqn{p=939} genomic covariates by columns, not including the censoring indicator and (censored) time-to-event variables. 
+  by rows and \eqn{p=944} clinical and genomic covariates by columns, not including the censoring indicator and (censored) time-to-event variables. 
   It comes as a compressed Rda data file.
 }
 
