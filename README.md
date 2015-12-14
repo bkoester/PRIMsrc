@@ -1,4 +1,4 @@
-Description
+### Description
 
 Performs a unified treatment of Bump Hunting by Patient Rule Induction Method (PRIM) in Survival, Regression and Classification settings (SRC). 
 The method generates decision rules delineating a region in the predictor space, where the response is larger than its average over the entire space. 
