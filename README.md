@@ -1,6 +1,5 @@
-============
-Description:
-============
+Description
+
 Performs a unified treatment of Bump Hunting by Patient Rule Induction Method (PRIM) in Survival, Regression and Classification settings (SRC). 
 The method generates decision rules delineating a region in the predictor space, where the response is larger than its average over the entire space. 
 The region is shaped as a hyperdimensional box or hyperrectangle that is not necessarily contiguous. 
@@ -9,21 +8,21 @@ The region is shaped as a hyperdimensional box or hyperrectangle that is not nec
 Assumptions are that the multivariate input covariates can be discrete or continuous and the univariate response variable can be discrete (Classification), continuous (Regression) or a time-to event, possibly censored (Survival).
 It is intended to handle low and high-dimensional multivariate datasets, including the situation where the number of covariates exceeds or dominates that of samples (p > n or p >> n paradigm).
 
-=====================================
-Branch #2  (unified) - version 1.0.0:
-=====================================
+========================================
+### Branch #2  (unified) - version 1.0.0
+
 This second branch (unified) will host the future complete version of the code (version 1.0.0), including undirected peeling search by Patient Rule Induction Method (PRIM) 
 that will allow the unified treatment of bump hunting for every type of common response: Survival, Regression and Classification (SRC).
 
-========
-License:
-========
+===========
+### License
+
 PRIMsrc is Open Source / Free Software, available under the GNU General Public License, version 3. 
 See details [here](https://github.com/jedazard/PRIMsrc/blob/unified/LICENSE).
 
-===========
-References:
-===========
+==============
+### References
+
 Open access to companion papers (accepted for publication):
 
 - [Statistical Analysis and Data Mining (2015-12-09)](http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1932-1872). 
