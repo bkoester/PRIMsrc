@@ -1,3 +1,19 @@
+### General Remarks
+
+Grand-total number of CRAN downloads since initial release to CRAN (2015-07-28), 
+as logged by [RStudio CRAN mirror](http://cran-logs.rstudio.com/):
+
+![](http://cranlogs.r-pkg.org/badges/grand-total/PRIMsrc) 
+ 
+Number of CRAN downloads for the last 30 days:
+
+![](http://cranlogs.r-pkg.org/badges/PRIMsrc) 
+
+Travis CI build result:
+
+![](https://travis-ci.org/jedazard/PRIMsrc.svg)
+
+===============
 ### Description
 
 Performs a unified treatment of Bump Hunting by Patient Rule Induction Method (PRIM) in Survival, Regression and Classification settings (SRC). 
