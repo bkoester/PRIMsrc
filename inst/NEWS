@@ -165,5 +165,6 @@ Date   : 2015-11-21
 o RELEASE 0.7.0
 - Initial release of branch #1 ("devel") to GitHub.
 - Changed real dataset #2 of lung cancer genomic data (miRNA) to inlude 5 additional clinical variables.
+- Built and tested under R-devel (2015-11-04 r69597) and release update to GitHub.
 ---------------------------------------------------------------------------------
 
