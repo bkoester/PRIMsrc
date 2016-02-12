@@ -30,14 +30,15 @@ In the process, two S3-class objects are created instead of one: an additional S
 ===========
 ### License
 
-PRIMsrc is Open Source / Free Software, available under the GNU General Public License, version 3. 
-See details [here](https://github.com/jedazard/PRIMsrc/blob/devel/LICENSE).
+PRIMsrc is open source / free software, licensed under the GNU General Public License, version 3 (GPLv3), 
+sponsored by the [Free Software Foundation](http://www.fsf.org/). To view a copy of this license, visit 
+[GNU Free Documentation License](http://www.gnu.org/licenses/gpl-3.0.html).
 
 
 ================
 ### Installation
 
-* To install the most up-to-date version (0.7.0) of PRIMsrc from GitHub, using devtools:
+* To install the most up-to-date development version (0.7.0) of PRIMsrc from GitHub, using devtools:
 
 ```{r}
 install.packages("devtools")
@@ -82,8 +83,9 @@ citation("PRIMsrc")
 etc...
 
 
-==============
-### Wiki
+==========================
+### Website - Wiki
 
-See [Wiki](https://github.com/jedazard/PRIMsrc/wiki) page for Roadmap, Publications, Case Studies, Documentation and Manual, Examples and Support.
+See [Website](https://github.com/jedazard.io/PRIMsrc) 
 
+See [Wiki](https://github.com/jedazard/PRIMsrc/wiki) for Roadmap, Publications, Case Studies, Documentation and Manual, Examples and Support.
