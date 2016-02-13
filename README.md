@@ -33,6 +33,17 @@ In the process, two S3-class objects are created instead of one: an additional S
 
 
 ================
+### Requirements
+
+PRIMsrc 0.7.0 requires R-3.0.2 (2013-09-25). It was built and tested under R-devel (2015-11-04 r69597) and Travis CI. 
+
+Installation has been tested on Windows, Linux, OSX and Solaris platforms. 
+
+See Travis CI build result:
+[![Build Status](https://travis-ci.org/jedazard/PRIMsrc.png?branch=devel)](https://travis-ci.org/jedazard/PRIMsrc)
+
+
+================
 ### Installation
 
 * To install the most up-to-date development version (0.7.0) of PRIMsrc from GitHub, using devtools:
@@ -42,17 +53,6 @@ install.packages("devtools")
 library("devtools")
 devtools::install_github("jedazard/PRIMsrc")
 ```
-
-
-================
-### Requirements
-
-PRIMsrc 0.7.0 requires R-3.0.2 (2013-09-25). It was built and tested under R-devel (2015-11-04 r69597) and Travis CI. 
-
-Installation has been tested on Windows, Linux, OSX and Solaris platforms. 
-
-See Travis CI build result:
-[![Build Status](https://travis-ci.org/jedazard/PRIMsrc.png?branch=devel)](https://travis-ci.org/jedazard/PRIMsrc)
 
 
 =========
@@ -79,8 +79,8 @@ citation("PRIMsrc")
 etc...
 
 
-==========================
+==================
 ### Website - Wiki
 
-- See Project [Website](http://jedazard.github.io/PRIMsrc/) 
-- See [Wiki](https://github.com/jedazard/PRIMsrc/wiki) for Roadmap, Publications, Case Studies, Documentation and Manual, Examples and Support.
+- See Project [Website](http://jedazard.github.io/PRIMsrc/) for General Remarks and Why Use PRIMsrc.
+- See Project [Wiki](https://github.com/jedazard/PRIMsrc/wiki) for Roadmap, Documentation and Examples, Publications, Case Studies, Support and How to contribute (code and documentation).
