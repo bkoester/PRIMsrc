@@ -27,7 +27,7 @@ In the process, two S3-class objects are created instead of one: an additional S
 ===========
 ### License
 
-PRIMsrc is open source / free software, licensed under the GNU General Public License, version 3 (GPLv3), 
+PRIMsrc is open source / free software, licensed under the GNU General Public License version 3 (GPLv3), 
 sponsored by the [Free Software Foundation](http://www.fsf.org/). To view a copy of this license, visit 
 [GNU Free Documentation License](http://www.gnu.org/licenses/gpl-3.0.html).
 
@@ -82,5 +82,5 @@ etc...
 ==========================
 ### Website - Wiki
 
-- See [Website](http://jedazard.github.io/PRIMsrc/) 
+- See Project [Website](http://jedazard.github.io/PRIMsrc/) 
 - See [Wiki](https://github.com/jedazard/PRIMsrc/wiki) for Roadmap, Publications, Case Studies, Documentation and Manual, Examples and Support.
