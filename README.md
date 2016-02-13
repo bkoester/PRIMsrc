@@ -26,8 +26,8 @@ This second branch (unified) will host the future complete version of the code (
 that will allow the unified treatment of bump hunting for every type of common response: Survival, Regression and Classification (SRC).
 
 
-==========================
+==================
 ### Website - Wiki
 
-- See Project [Website](http://jedazard.github.io/PRIMsrc/) 
-- See [Wiki](https://github.com/jedazard/PRIMsrc/wiki) for Roadmap, Publications, Case Studies, Documentation and Manual, Examples and Support.
+- See Project [Website](http://jedazard.github.io/PRIMsrc/) for General Remarks and Why Use PRIMsrc.
+- See Project [Wiki](https://github.com/jedazard/PRIMsrc/wiki) for Roadmap, Documentation and Examples, Publications, Case Studies, Support and How to contribute (code and documentation).
