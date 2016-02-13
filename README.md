@@ -21,7 +21,7 @@ that will allow the unified treatment of bump hunting for every type of common r
 ===========
 ### License
 
-PRIMsrc is open source / free software, licensed under the GNU General Public License, version 3 (GPLv3), 
+PRIMsrc is open source / free software, licensed under the GNU General Public License version 3 (GPLv3), 
 sponsored by the [Free Software Foundation](http://www.fsf.org/). To view a copy of this license, visit 
 [GNU Free Documentation License](http://www.gnu.org/licenses/gpl-3.0.html).
 
@@ -29,5 +29,5 @@ sponsored by the [Free Software Foundation](http://www.fsf.org/). To view a copy
 ==========================
 ### Website - Wiki
 
-- See [Website](http://jedazard.github.io/PRIMsrc/) 
+- See Project [Website](http://jedazard.github.io/PRIMsrc/) 
 - See [Wiki](https://github.com/jedazard/PRIMsrc/wiki) for Roadmap, Publications, Case Studies, Documentation and Manual, Examples and Support.
