@@ -1,4 +1,12 @@
-### General Remarks
+### License
+
+PRIMsrc is open source / free software, licensed under the GNU General Public License version 3 (GPLv3), 
+sponsored by the [Free Software Foundation](http://www.fsf.org/). To view a copy of this license, visit 
+[GNU Free Documentation License](http://www.gnu.org/licenses/gpl-3.0.html).
+
+
+=============
+### Downloads
 
 CRAN downloads since initial release to CRAN (2015-07-28):
 [![](http://cranlogs.r-pkg.org/badges/grand-total/PRIMsrc)](http://cran.rstudio.com/web/packages/PRIMsrc/index.html)
@@ -22,14 +30,6 @@ Concordance Error Rate (CER), Log-Rank Test (LRT), or Log-Hazard Ratio (LHR) (se
 In addition, this cross-validation procedure is carried out in a cross-validation function called `cv.sbh()`, separately from the main function `sbh()`. 
 Altogether, this allows a more rigorous treatment of model validation, a better control on the user-end and an improvement of the maintenance on the back-end. 
 In the process, two S3-class objects are created instead of one: an additional S3-class object `CV` is output by the cross-validation function `cv.sbh()` and used as input in the main function `sbh()`. 
-
-
-===========
-### License
-
-PRIMsrc is open source / free software, licensed under the GNU General Public License version 3 (GPLv3), 
-sponsored by the [Free Software Foundation](http://www.fsf.org/). To view a copy of this license, visit 
-[GNU Free Documentation License](http://www.gnu.org/licenses/gpl-3.0.html).
 
 
 ================
