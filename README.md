@@ -21,7 +21,7 @@ Concordance Error Rate (CER), Log-Rank Test (LRT), or Log-Hazard Ratio (LHR) (se
 
 In addition, this cross-validation procedure is carried out in a cross-validation function called `cv.sbh()`, separately from the main function `sbh()`. 
 Altogether, this allows a more rigorous treatment of model validation, a better control on the user-end and an improvement of the maintenance on the back-end. 
-In the process, two S3-class objects are created instead of one: an additional S3-class object 'CV' is output by the cross-validation function `cv.sbh()` and used as input in the main function `sbh()`. 
+In the process, two S3-class objects are created instead of one: an additional S3-class object `CV` is output by the cross-validation function `cv.sbh()` and used as input in the main function `sbh()`. 
 
 
 ===========
